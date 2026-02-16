@@ -68,7 +68,7 @@ Otherwise use **REST API fallback**.
 
 **Setup:** See [references/api.md](references/api.md) for authentication and API usage.
 
-**Base URL:** `https://app.aident.ai` by default. If the environment variable `AIDENT_BASE_URL` is set, use that instead (e.g. `http://localhost:3000` for local development).
+**Base URL:** `https://app.aident.ai` by default. If the environment variable `AIDENT_BASE_URL` is set, use that instead.
 
 **Workflow:**
 1. Get an Aident Bearer token.

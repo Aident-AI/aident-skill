@@ -36,13 +36,13 @@ For agents without MCP support. Same 22 tools, simpler HTTP interface.
 
 ### Custom Base URL
 
-Set `AIDENT_BASE_URL` to point at a different server (e.g. local dev):
+Set `AIDENT_BASE_URL` to override the default server (`https://app.aident.ai`):
 
 ```bash
-export AIDENT_BASE_URL=http://localhost:3000
+export AIDENT_BASE_URL=https://your-server.example.com
 ```
 
-All curl examples and the E2E test script respect this variable. Default: `https://app.aident.ai`.
+All curl examples and the E2E test script respect this variable.
 
 ## What You Get
 

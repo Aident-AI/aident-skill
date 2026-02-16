@@ -8,10 +8,10 @@ Use the REST API when MCP tools are not available. Same tools, simpler interface
 https://app.aident.ai/api/mcp/rest
 ```
 
-Override with `AIDENT_BASE_URL` for local development:
+Override with `AIDENT_BASE_URL` to point at a different server:
 
 ```bash
-export AIDENT_BASE_URL=http://localhost:3000
+export AIDENT_BASE_URL=https://your-server.example.com
 ```
 
 ## Getting a Token
