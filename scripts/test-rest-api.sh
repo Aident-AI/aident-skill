@@ -1,10 +1,13 @@
 #!/bin/bash
 # Test MCP REST API and OOB OAuth flow
 # Usage: ./aident-skill/scripts/test-rest-api.sh [BASE_URL]
+#
+# Credentials are saved to ~/.aident/credentials.json so you only need
+# to authenticate once. Delete that file to force re-authentication.
 
 set -euo pipefail
 
-BASE_URL="${1:-${AIDENT_BASE_URL:-http://localhost:3000}}"
+CRED_FILE="$HOME/.aident/credentials.json"
 PASS=0
 FAIL=0
 TOTAL=0
@@ -49,57 +52,98 @@ assert_json_value() {
   fi
 }
 
+save_credentials() {
+  mkdir -p "$(dirname "$CRED_FILE")"
+  python3 -c "
+import json
+d = {'base_url': '$BASE_URL', 'client_id': '$CLIENT_ID', 'access_token': '$ACCESS_TOKEN'}
+with open('$CRED_FILE', 'w') as f: json.dump(d, f, indent=2)
+"
+  echo "  Credentials saved to $CRED_FILE"
+}
+
+# ------------------------------------------------------------------
+# Step 1: Resolve credentials
 # ------------------------------------------------------------------
 bold "=== MCP REST API E2E Test ==="
-echo "Target: $BASE_URL"
 echo ""
 
-# Step 1: Register OAuth client
-bold "Step 1: Register OAuth client"
-REGISTER_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/oauth/register" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"client_name\": \"test-rest-e2e-$(date +%s)\",
-    \"redirect_uris\": [\"$BASE_URL/mcp/oob\"]
-  }")
+# Priority: CLI arg > AIDENT_TOKEN env > credentials file > OOB flow
+if [ -n "${AIDENT_TOKEN:-}" ]; then
+  BASE_URL="${1:-${AIDENT_BASE_URL:-http://localhost:3000}}"
+  ACCESS_TOKEN="$AIDENT_TOKEN"
+  CLIENT_ID=""
+  bold "Step 1: Using AIDENT_TOKEN from environment"
+  echo "  Target: $BASE_URL"
+  echo ""
+elif [ -f "$CRED_FILE" ]; then
+  SAVED_BASE_URL=$(python3 -c "import json; print(json.load(open('$CRED_FILE')).get('base_url',''))" 2>/dev/null || true)
+  SAVED_TOKEN=$(python3 -c "import json; print(json.load(open('$CRED_FILE')).get('access_token',''))" 2>/dev/null || true)
+  SAVED_CLIENT_ID=$(python3 -c "import json; print(json.load(open('$CRED_FILE')).get('client_id',''))" 2>/dev/null || true)
 
-REGISTER_STATUS=$(echo "$REGISTER_RESPONSE" | tail -1)
-REGISTER_BODY=$(echo "$REGISTER_RESPONSE" | sed '$d')
-
-assert_status "Client registration" 201 "$REGISTER_STATUS"
-assert_json_field "Registration response" "$REGISTER_BODY" "client_id"
-
-CLIENT_ID=$(echo "$REGISTER_BODY" | python3 -c "import sys,json; print(json.load(sys.stdin)['client_id'])")
-echo "  Client ID: $CLIENT_ID"
-echo ""
-
-# Step 2: OOB authorization
-bold "Step 2: Authorize via OOB flow"
-AUTHORIZE_URL="$BASE_URL/api/mcp/oauth/authorize?client_id=$CLIENT_ID&redirect_uri=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$BASE_URL/mcp/oob'))")&response_type=code"
-
-echo "  Opening browser to authorize..."
-echo "  URL: $AUTHORIZE_URL"
-echo ""
-
-if command -v open &>/dev/null; then
-  open "$AUTHORIZE_URL"
-elif command -v xdg-open &>/dev/null; then
-  xdg-open "$AUTHORIZE_URL"
-else
-  echo "  (Could not detect browser command — open the URL above manually)"
+  if [ -n "$SAVED_TOKEN" ]; then
+    BASE_URL="${1:-${AIDENT_BASE_URL:-$SAVED_BASE_URL}}"
+    ACCESS_TOKEN="$SAVED_TOKEN"
+    CLIENT_ID="$SAVED_CLIENT_ID"
+    bold "Step 1: Loaded credentials from $CRED_FILE"
+    echo "  Target: $BASE_URL"
+    echo ""
+  fi
 fi
 
-echo "  1. Log in if prompted"
-echo "  2. Click 'Approve'"
-echo "  3. Copy the access token from the OOB page"
-echo ""
-read -rp "  Paste your access token here: " ACCESS_TOKEN
+# If we still don't have a token, run the OOB flow
+if [ -z "${ACCESS_TOKEN:-}" ]; then
+  BASE_URL="${1:-${AIDENT_BASE_URL:-http://localhost:3000}}"
+  bold "Step 1: Register OAuth client"
+  echo "  Target: $BASE_URL"
+  echo ""
 
-if [ -z "$ACCESS_TOKEN" ]; then
-  red "No token provided. Aborting."
-  exit 1
+  REGISTER_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/oauth/register" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"client_name\": \"test-rest-e2e-$(date +%s)\",
+      \"redirect_uris\": [\"$BASE_URL/mcp/oob\"]
+    }")
+
+  REGISTER_STATUS=$(echo "$REGISTER_RESPONSE" | tail -1)
+  REGISTER_BODY=$(echo "$REGISTER_RESPONSE" | sed '$d')
+
+  assert_status "Client registration" 201 "$REGISTER_STATUS"
+  assert_json_field "Registration response" "$REGISTER_BODY" "client_id"
+
+  CLIENT_ID=$(echo "$REGISTER_BODY" | python3 -c "import sys,json; print(json.load(sys.stdin)['client_id'])")
+  echo "  Client ID: $CLIENT_ID"
+  echo ""
+
+  bold "Step 2: Authorize via OOB flow"
+  AUTHORIZE_URL="$BASE_URL/api/mcp/oauth/authorize?client_id=$CLIENT_ID&redirect_uri=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$BASE_URL/mcp/oob'))")&response_type=code"
+
+  echo "  Opening browser to authorize..."
+  echo "  URL: $AUTHORIZE_URL"
+  echo ""
+
+  if command -v open &>/dev/null; then
+    open "$AUTHORIZE_URL"
+  elif command -v xdg-open &>/dev/null; then
+    xdg-open "$AUTHORIZE_URL"
+  else
+    echo "  (Could not detect browser command — open the URL above manually)"
+  fi
+
+  echo "  1. Log in if prompted"
+  echo "  2. Click 'Approve'"
+  echo "  3. Copy the access token from the OOB page"
+  echo ""
+  read -rp "  Paste your access token here: " ACCESS_TOKEN
+
+  if [ -z "$ACCESS_TOKEN" ]; then
+    red "No token provided. Aborting."
+    exit 1
+  fi
+
+  save_credentials
+  echo ""
 fi
-echo ""
 
 # ------------------------------------------------------------------
 bold "Step 3: Test REST endpoint"
