@@ -58,7 +58,7 @@ Otherwise use **REST API fallback**.
 1. Collect required inputs from the user.
 2. Call the relevant tool(s) directly.
 3. Handle errors:
-   - If auth error: ask the user to reconnect (`auth_logout` then reconnect).
+   - If auth error: call `auth_logout`, delete `~/.aident/credentials.json`, then reconnect via OOB flow.
    - If missing integration: call `integration_connect` to connect it, then retry.
 4. Return results in a clean format.
 
@@ -154,7 +154,7 @@ Parse the `result` field from the JSON response.
 
 ### Auth (2)
 - **auth_status** -- Check authentication status (always accessible)
-- **auth_logout** -- Revoke access token and log out
+- **auth_logout** -- Revoke access token and log out. After calling this, delete `~/.aident/credentials.json` so the next request triggers a fresh OOB flow.
 
 ### Skills (4)
 - **skill_search** -- Search skills by query, tags, or type using hybrid search
