@@ -30,19 +30,25 @@ claude mcp add --transport http aident https://app.aident.ai/api/mcp
 
 For agents without MCP support. Same 22 tools, simpler HTTP interface.
 
-1. Get a Bearer token ([references/api.md](references/api.md)) -- browser copy-paste or standard OAuth
+1. Authenticate via the OOB flow -- tokens are persisted to `~/.aident/credentials.json` automatically
 2. POST to `https://app.aident.ai/api/mcp/rest` with `{ "tool": "...", "arguments": {...} }`
 3. See [examples/curl/](examples/curl/) for ready-to-use examples
 
-### Custom Base URL
+### Advanced Overrides
 
-Set `AIDENT_BASE_URL` to override the default server (`https://app.aident.ai`):
+Set `AIDENT_BASE_URL` to point at a different server (default: `https://app.aident.ai`):
 
 ```bash
 export AIDENT_BASE_URL=https://your-server.example.com
 ```
 
-All curl examples and the E2E test script respect this variable.
+Set `AIDENT_TOKEN` to skip the OOB auth flow and use a token directly:
+
+```bash
+export AIDENT_TOKEN=your-bearer-token
+```
+
+Both are optional. By default, the skill authenticates via the OOB flow and persists tokens to `~/.aident/credentials.json`.
 
 ## What You Get
 
@@ -61,7 +67,7 @@ See [SKILL.md](./SKILL.md) for full tool descriptions and dual-mode usage instru
 
 **MCP clients:** OAuth sign-in opens automatically on first use. Tokens are managed by the client.
 
-**REST API:** Get a Bearer token via browser copy-paste or OAuth 2.1 PKCE flow. See [references/api.md](references/api.md).
+**REST API:** On first use, the OOB flow opens a browser for login. Tokens are saved to `~/.aident/credentials.json` and reused across sessions. See [references/api.md](references/api.md) and [SKILL.md](./SKILL.md) for the full flow.
 
 **Prerequisites**: [Aident account](https://app.aident.ai) with connected integrations (Gmail, Slack, GitHub, etc.)
 
