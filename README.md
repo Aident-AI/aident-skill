@@ -1,28 +1,34 @@
 # Aident Skill
 
-[![Skills.sh](https://img.shields.io/badge/skills.sh-aident--mcp--server-blue)](https://skills.sh/skills/aident-ai/aident-skill)
+[![Skills.sh](https://img.shields.io/badge/skills.sh-aident--skill-blue)](https://skills.sh/skills/aident-ai/aident-skill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Access [Aident](https://aident.ai)'s 1000+ integrations and automation platform from any AI assistant. Works with MCP clients and skill-only agents.
+Access [Aident](https://aident.ai)'s 1000+ integrations and automation platform from any AI assistant. Works with MCP clients and REST-only agents.
 
-## Option A (Recommended): MCP
-
-Best experience. Your AI assistant gets direct access to 22 tools.
+## Install
 
 ```bash
 npx skills add aident-ai/aident-skill
 ```
 
-Or configure your client manually -- see [references/mcp.md](references/mcp.md) for all clients (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI, etc.).
+This installs the skill definition into your project. Your AI assistant reads it and automatically picks the best mode -- MCP tools if available, REST API otherwise.
+
+## How It Works
+
+### MCP (recommended)
+
+Best experience. Your AI assistant gets direct access to 22 tools via the MCP protocol.
+
+Configure your client manually if needed -- see [references/mcp.md](references/mcp.md) for all clients (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI, etc.).
 
 **Quick setup for Claude Code:**
 ```bash
 claude mcp add --transport http aident https://app.aident.ai/api/mcp
 ```
 
-## Option B: REST API (No MCP)
+### REST API
 
-For skill-only agents without MCP support. Same tools, simpler interface.
+For agents without MCP support. Same 22 tools, simpler HTTP interface.
 
 1. Get a Bearer token ([references/api.md](references/api.md)) -- browser copy-paste or standard OAuth
 2. POST to `https://app.aident.ai/api/mcp/rest` with `{ "tool": "...", "arguments": {...} }`
