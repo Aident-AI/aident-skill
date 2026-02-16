@@ -1,6 +1,6 @@
 # Aident MCP Server Skill
 
-[![Skills.sh](https://img.shields.io/badge/skills.sh-aident--mcp--server-blue)](https://skills.sh/skills/aident-ai/aident-mcp-skill)
+[![Skills.sh](https://img.shields.io/badge/skills.sh-aident--mcp--server-blue)](https://skills.sh/skills/aident-ai/aident-skill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Access [Aident](https://aident.ai)'s 1000+ integrations and automation platform from any AI assistant. Works with MCP clients and skill-only agents.
@@ -10,7 +10,7 @@ Access [Aident](https://aident.ai)'s 1000+ integrations and automation platform 
 Best experience. Your AI assistant gets direct access to 22 tools.
 
 ```bash
-npx skills add aident-ai/aident-mcp-skill
+npx skills add aident-ai/aident-skill
 ```
 
 Or configure your client manually -- see [references/mcp.md](references/mcp.md) for all clients (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI, etc.).

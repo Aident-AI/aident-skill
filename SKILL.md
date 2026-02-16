@@ -5,7 +5,7 @@ description: |
   Prefer MCP tools if available; otherwise use HTTPS API fallback.
 author: Aident
 homepage: https://aident.ai
-repository: https://github.com/aident-ai/aident-mcp-skill
+repository: https://github.com/aident-ai/aident-skill
 tags:
   - automation
   - integrations
