@@ -1,6 +1,6 @@
 #!/bin/bash
 # Test MCP REST API and OOB OAuth flow
-# Usage: ./mcp-skill/scripts/test-rest-api.sh [BASE_URL]
+# Usage: ./aident-skill/scripts/test-rest-api.sh [BASE_URL]
 
 set -euo pipefail
 
