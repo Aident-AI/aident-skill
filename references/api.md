@@ -8,6 +8,12 @@ Use the REST API when MCP tools are not available. Same tools, simpler interface
 https://app.aident.ai/api/mcp/rest
 ```
 
+Override with `AIDENT_BASE_URL` for local development:
+
+```bash
+export AIDENT_BASE_URL=http://localhost:3000
+```
+
 ## Getting a Token
 
 ### Option A: Simple (browser copy-paste)
@@ -17,10 +23,10 @@ Best for scripts and CLI tools that can't run a callback server.
 **1. Register a client:**
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/oauth/register \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/register \
   -H "Content-Type: application/json" \
   -d '{
-    "redirect_uris": ["https://app.aident.ai/mcp/oob"],
+    "redirect_uris": ["${AIDENT_BASE_URL:-https://app.aident.ai}/mcp/oob"],
     "client_name": "My Script",
     "grant_types": ["authorization_code", "refresh_token"],
     "response_types": ["code"],
@@ -33,7 +39,7 @@ Save the `client_id` from the response.
 **2. Open in browser:**
 
 ```
-https://app.aident.ai/api/mcp/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=https://app.aident.ai/mcp/oob
+${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=${AIDENT_BASE_URL:-https://app.aident.ai}/mcp/oob
 ```
 
 **3. Log in and approve.** The token is displayed on screen. Copy it.
@@ -51,7 +57,7 @@ For applications with a callback server (web apps, sophisticated CLI tools).
 **1. Register** with your callback URL:
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/oauth/register \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/register \
   -H "Content-Type: application/json" \
   -d '{
     "redirect_uris": ["http://localhost:3000/callback"],
@@ -69,7 +75,7 @@ curl -X POST https://app.aident.ai/api/mcp/oauth/register \
 **4. Exchange code** for tokens:
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/oauth/token \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=authorization_code&client_id=CLIENT_ID&code=AUTH_CODE&code_verifier=VERIFIER&redirect_uri=http://localhost:3000/callback"
 ```
@@ -77,7 +83,7 @@ curl -X POST https://app.aident.ai/api/mcp/oauth/token \
 **5. Refresh** when expired (access tokens last 1 hour, refresh tokens 30 days):
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/oauth/token \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=refresh_token&client_id=CLIENT_ID&refresh_token=REFRESH_TOKEN"
 ```
@@ -88,7 +94,7 @@ curl -X POST https://app.aident.ai/api/mcp/oauth/token \
 
 ```bash
 curl -H "Authorization: Bearer $AIDENT_TOKEN" \
-  https://app.aident.ai/api/mcp/rest
+  ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest
 ```
 
 Returns `{ "tools": [{ "name": "...", "description": "...", "inputSchema": {...} }, ...] }`.
@@ -96,7 +102,7 @@ Returns `{ "tools": [{ "name": "...", "description": "...", "inputSchema": {...}
 ### Call a tool
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/rest \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "tool": "skill_search", "arguments": { "query": "send email", "limit": 5 } }'
@@ -108,7 +114,7 @@ Returns `{ "result": { ... } }`.
 
 ```bash
 # Execute a skill
-curl -X POST https://app.aident.ai/api/mcp/rest \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{
@@ -120,13 +126,13 @@ curl -X POST https://app.aident.ai/api/mcp/rest \
   }'
 
 # List playbooks
-curl -X POST https://app.aident.ai/api/mcp/rest \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "tool": "playbook_list", "arguments": {} }'
 
 # Check integrations
-curl -X POST https://app.aident.ai/api/mcp/rest \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "tool": "integration_status", "arguments": {} }'

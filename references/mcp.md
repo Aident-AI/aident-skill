@@ -8,6 +8,8 @@ Connect your AI assistant to Aident via the Model Context Protocol.
 https://app.aident.ai/api/mcp
 ```
 
+For local development, replace with `http://localhost:3000/api/mcp`.
+
 ## Client Configuration
 
 ### Claude Code

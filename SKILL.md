@@ -68,9 +68,11 @@ Otherwise use **REST API fallback**.
 
 **Setup:** See [references/api.md](references/api.md) for authentication and API usage.
 
+**Base URL:** `https://app.aident.ai` by default. If the environment variable `AIDENT_BASE_URL` is set, use that instead (e.g. `http://localhost:3000` for local development).
+
 **Workflow:**
 1. Get an Aident Bearer token.
-2. Send POST requests to `https://app.aident.ai/api/mcp/rest` with `{ "tool": "...", "arguments": {...} }`.
+2. Send POST requests to `$AIDENT_BASE_URL/api/mcp/rest` (default `https://app.aident.ai/api/mcp/rest`) with `{ "tool": "...", "arguments": {...} }`.
 3. Parse the `result` field from the response.
 
 > If the client can make HTTP requests directly, use that. Otherwise provide copy-paste `curl` commands from [examples/curl/](examples/curl/).
@@ -78,7 +80,7 @@ Otherwise use **REST API fallback**.
 **Example request:**
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/rest \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "tool": "skill_search", "arguments": { "query": "send email", "limit": 5 } }'
@@ -145,7 +147,7 @@ User: "List my playbooks"
 
 Assistant:
 - Confirm Bearer token is available
-- POST to `https://app.aident.ai/api/mcp/rest`:
+- POST to `$AIDENT_BASE_URL/api/mcp/rest`:
   ```json
   {
     "tool": "playbook_list",

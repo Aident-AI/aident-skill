@@ -32,7 +32,7 @@ The skill needs integrations you haven't connected:
 Your access token has expired (1 hour TTL). Refresh it:
 
 ```bash
-curl -X POST https://app.aident.ai/api/mcp/oauth/token \
+curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=refresh_token&client_id=CLIENT_ID&refresh_token=REFRESH_TOKEN"
 ```

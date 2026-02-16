@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-BASE_URL="${1:-http://localhost:3000}"
+BASE_URL="${1:-${AIDENT_BASE_URL:-http://localhost:3000}}"
 PASS=0
 FAIL=0
 TOTAL=0

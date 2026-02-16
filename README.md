@@ -34,6 +34,16 @@ For agents without MCP support. Same 22 tools, simpler HTTP interface.
 2. POST to `https://app.aident.ai/api/mcp/rest` with `{ "tool": "...", "arguments": {...} }`
 3. See [examples/curl/](examples/curl/) for ready-to-use examples
 
+### Custom Base URL
+
+Set `AIDENT_BASE_URL` to point at a different server (e.g. local dev):
+
+```bash
+export AIDENT_BASE_URL=http://localhost:3000
+```
+
+All curl examples and the E2E test script respect this variable. Default: `https://app.aident.ai`.
+
 ## What You Get
 
 | Category | Tools | Examples |
