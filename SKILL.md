@@ -1,5 +1,5 @@
 ---
-name: aident-mcp-server
+name: aident-skill
 description: |
   Access Aident's 1000+ integrations and automation platform.
   Prefer MCP tools if available; otherwise use HTTPS API fallback.

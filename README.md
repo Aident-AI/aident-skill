@@ -1,4 +1,4 @@
-# Aident MCP Server Skill
+# Aident Skill
 
 [![Skills.sh](https://img.shields.io/badge/skills.sh-aident--mcp--server-blue)](https://skills.sh/skills/aident-ai/aident-skill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
