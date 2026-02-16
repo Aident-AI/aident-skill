@@ -66,25 +66,89 @@ Otherwise use **REST API fallback**.
 
 **When:** No Aident MCP tools are available in the client.
 
-**Setup:** See [references/api.md](references/api.md) for authentication and API usage.
+#### Credentials file
 
-**Base URL:** `https://app.aident.ai` by default. If the environment variable `AIDENT_BASE_URL` is set, use that instead.
+Authentication is persisted in `~/.aident/credentials.json` so tokens survive across sessions:
 
-**Workflow:**
-1. Get an Aident Bearer token.
-2. Send POST requests to `$AIDENT_BASE_URL/api/mcp/rest` (default `https://app.aident.ai/api/mcp/rest`) with `{ "tool": "...", "arguments": {...} }`.
-3. Parse the `result` field from the response.
+```json
+{
+  "base_url": "https://app.aident.ai",
+  "client_id": "<oauth_client_id>",
+  "access_token": "<bearer_token>",
+  "refresh_token": "<refresh_token>",
+  "expires_at": "<ISO8601_timestamp>"
+}
+```
 
-> If the client can make HTTP requests directly, use that. Otherwise provide copy-paste `curl` commands from [examples/curl/](examples/curl/).
+#### Step 1: Load credentials
 
-**Example request:**
+1. Check if `AIDENT_TOKEN` env var is set. If yes, use it directly as the Bearer token and skip to **Step 3**. (This is an advanced override -- do not ask the user for it.)
+2. Read `~/.aident/credentials.json`. If the file exists and has a non-empty `access_token`:
+   - If `expires_at` is in the past and `refresh_token` is present, go to **Step 2b** (refresh).
+   - Otherwise skip to **Step 3**.
+3. If the file does not exist or has no `access_token`, go to **Step 2a** (first-time setup).
+
+#### Step 2a: First-time authentication (OOB flow)
+
+Run these steps automatically -- never ask the user to provide a token manually.
+
+1. Resolve the base URL: use `AIDENT_BASE_URL` env if set, otherwise `https://app.aident.ai`.
+2. Create the credentials directory if it does not exist: `mkdir -p ~/.aident`
+3. Register an OAuth client:
+   ```bash
+   curl -s -X POST $BASE_URL/api/mcp/oauth/register \
+     -H "Content-Type: application/json" \
+     -d '{
+       "redirect_uris": ["'"$BASE_URL"'/mcp/oob"],
+       "client_name": "aident-skill-cli",
+       "grant_types": ["authorization_code", "refresh_token"],
+       "response_types": ["code"],
+       "token_endpoint_auth_method": "none"
+     }'
+   ```
+   Save `client_id` from the JSON response.
+4. Open the authorization URL in the user's browser:
+   ```
+   $BASE_URL/api/mcp/oauth/authorize?response_type=code&client_id=$CLIENT_ID&redirect_uri=$BASE_URL/mcp/oob
+   ```
+   Use `open` (macOS), `xdg-open` (Linux), or `start` (Windows) to launch the browser.
+5. Tell the user: "I've opened Aident in your browser. Please log in and click **Approve**, then paste the access token shown on screen back here."
+6. When the user pastes the token, write `~/.aident/credentials.json`:
+   ```json
+   {
+     "base_url": "$BASE_URL",
+     "client_id": "$CLIENT_ID",
+     "access_token": "<pasted_token>",
+     "refresh_token": "",
+     "expires_at": ""
+   }
+   ```
+7. Proceed to **Step 3**.
+
+#### Step 2b: Refresh an expired token
 
 ```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "tool": "skill_search", "arguments": { "query": "send email", "limit": 5 } }'
+curl -s -X POST $BASE_URL/api/mcp/oauth/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=refresh_token&client_id=$CLIENT_ID&refresh_token=$REFRESH_TOKEN"
 ```
+
+If refresh succeeds, update `access_token`, `refresh_token`, and `expires_at` in `~/.aident/credentials.json`. If refresh fails (e.g. token revoked or expired), delete the credentials file and go back to **Step 2a**.
+
+#### Step 3: Call tools
+
+Use the `access_token` from the credentials file (or `AIDENT_TOKEN` env) and `base_url` (or `AIDENT_BASE_URL` env, default `https://app.aident.ai`):
+
+```bash
+curl -s -X POST $BASE_URL/api/mcp/rest \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{ "tool": "<tool_name>", "arguments": { ... } }'
+```
+
+Parse the `result` field from the JSON response.
+
+**On HTTP 401:** The token has expired. Go to **Step 2b** to refresh, then retry the request. If refresh also fails, go to **Step 2a**.
 
 ## Available Tools (22)
 
@@ -131,31 +195,39 @@ curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
 
 ## Examples
 
-### Example 1 -- MCP mode
+### Example 1: MCP mode
 
-User: "Find skills for sending emails and send a meeting summary to team at example.com"
+User: "Find skills for sending emails and send a meeting summary to team@example.com"
 
-Assistant:
-- Call `skill_search` with `{ "query": "send email" }`
-- Review results, pick best match (e.g. `gmail_send_email`)
-- Call `skill_execute` with `{ "skillId": "gmail_send_email", "input": { "to": "team@example.com", "subject": "Meeting Summary", "body": "..." } }`
-- Present confirmation to user
+Assistant workflow:
+1. Call `skill_search` with `{ "query": "send email" }`
+2. Review results, pick best match (e.g. `gmail_send_email`)
+3. Call `skill_execute` with the skill and input
+4. Present confirmation to user
 
-### Example 2 -- REST API fallback
+### Example 2: REST fallback, first-time user
+
+User: "Send an email to team@example.com with today's meeting notes"
+
+Assistant workflow (no `~/.aident/credentials.json` found):
+1. Register OAuth client with the Aident server
+2. Open browser to authorization page
+3. Tell user: "I've opened Aident in your browser. Please log in and click Approve, then paste the access token shown on screen back here."
+4. User pastes token
+5. Save credentials to `~/.aident/credentials.json`
+6. Call `skill_search` for email skills via REST
+7. Call `skill_execute` to send the email via REST
+8. Confirm to user
+
+### Example 3: REST fallback, returning user
 
 User: "List my playbooks"
 
-Assistant:
-- Confirm Bearer token is available
-- POST to `$AIDENT_BASE_URL/api/mcp/rest`:
-  ```json
-  {
-    "tool": "playbook_list",
-    "arguments": {}
-  }
-  ```
-- Parse the `result` field from response to extract playbooks array
-- Present playbook list to user
+Assistant workflow (reads existing `~/.aident/credentials.json`):
+1. Load `access_token` and `base_url` from credentials file
+2. POST to `$BASE_URL/api/mcp/rest` with `{ "tool": "playbook_list", "arguments": {} }`
+3. Parse the `result` field from response
+4. Present playbook list to user
 
 ## Security
 
