@@ -170,7 +170,7 @@ Parse the `result` field from the JSON response.
 - **playbook_list** -- List your playbooks with status and trigger info
 - **playbook_get_info** -- Get playbook details including content and trigger configuration
 - **playbook_generate** -- Generate a new playbook from a natural language description
-- **playbook_execute** -- Execute a playbook (returns execution ID for tracking)
+- **playbook_execute** -- Execute a playbook (returns execution ID for tracking), or send a follow-up message to an existing execution via `executionSessionId`
 - **playbook_update_trigger** -- Enable or disable playbook triggers
 - **playbook_execution_history** -- Get execution history for a specific playbook
 
@@ -184,7 +184,7 @@ Parse the `result` field from the JSON response.
 - **dashboard_active_playbooks** -- List playbooks with active triggers or running executions
 - **execution_get_details** -- Get execution details including status and messages
 - **execution_list** -- List recent executions across all playbooks
-- **session_get_messages** -- Get simplified chat messages for progress polling
+- **execution_get_messages** -- Get simplified chat messages for progress polling
 
 ## Safety & privacy
 
