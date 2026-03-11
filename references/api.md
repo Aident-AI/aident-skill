@@ -116,7 +116,7 @@ Returns `{ "tools": [{ "name": "...", "description": "...", "inputSchema": {...}
 curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "tool": "skill_search", "arguments": { "query": "send email", "limit": 5 } }'
+  -d '{ "tool": "capability_search", "arguments": { "query": "send email", "limit": 5 } }'
 ```
 
 Returns `{ "result": { ... } }`.

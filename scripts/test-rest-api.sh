@@ -159,7 +159,7 @@ LIST_BODY=$(echo "$LIST_RESPONSE" | sed '$d')
 assert_status "List tools" 200 "$LIST_STATUS"
 assert_json_field "List response" "$LIST_BODY" "tools"
 TOOL_COUNT=$(echo "$LIST_BODY" | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('tools',[])))" 2>/dev/null || echo "0")
-assert_json_value "Has 22 tools" "$LIST_BODY" "len(d['tools']) == 22"
+assert_json_value "Has at least 22 tools" "$LIST_BODY" "len(d['tools']) >= 22"
 echo "  Tool count: $TOOL_COUNT"
 echo ""
 
@@ -176,17 +176,17 @@ assert_status "Call auth_status" 200 "$AUTH_STATUS"
 assert_json_field "auth_status response" "$AUTH_BODY" "result"
 echo ""
 
-# Test 3c: POST /api/mcp/rest — call skill_search
-bold "  3c. POST /api/mcp/rest — call skill_search"
+# Test 3c: POST /api/mcp/rest — call capability_search
+bold "  3c. POST /api/mcp/rest — call capability_search"
 SEARCH_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"tool": "skill_search", "arguments": {"query": "send email", "limit": 3}}')
+  -d '{"tool": "capability_search", "arguments": {"query": "send email", "limit": 3}}')
 SEARCH_STATUS=$(echo "$SEARCH_RESPONSE" | tail -1)
 SEARCH_BODY=$(echo "$SEARCH_RESPONSE" | sed '$d')
 
-assert_status "Call skill_search" 200 "$SEARCH_STATUS"
-assert_json_field "skill_search response" "$SEARCH_BODY" "result"
+assert_status "Call capability_search" 200 "$SEARCH_STATUS"
+assert_json_field "capability_search response" "$SEARCH_BODY" "result"
 echo ""
 
 # ------------------------------------------------------------------

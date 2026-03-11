@@ -40,7 +40,7 @@ It supports two execution modes:
 ## Decide which mode to use
 
 Use **MCP mode** if the client has MCP tools available named like:
-- `skill_search`, `skill_list`, `skill_get_info`, `skill_execute`
+- `capability_search`, `skill_list`, `skill_get_info`, `skill_execute`
 - `playbook_list`, `playbook_generate`, `playbook_execute`
 - `template_search`, `template_list`, `template_instantiate`
 - `integration_status`, `integration_connect`
@@ -50,7 +50,7 @@ Otherwise use **REST API fallback**.
 
 ### MCP mode (preferred)
 
-**When:** The client is connected to the Aident MCP server and can call tools like `skill_search`, `playbook_list`, etc.
+**When:** The client is connected to the Aident MCP server and can call tools like `capability_search`, `playbook_list`, etc.
 
 **Setup:** See [references/mcp.md](references/mcp.md) for client configuration.
 
@@ -156,8 +156,8 @@ Parse the `result` field from the JSON response.
 - **auth_status** -- Check authentication status (always accessible)
 - **auth_logout** -- Revoke access token and log out. After calling this, delete `~/.aident/credentials.json` so the next request triggers a fresh OOB flow.
 
-### Skills (4)
-- **skill_search** -- Search skills by query, tags, or type using hybrid search
+### Skills & Discovery (4)
+- **capability_search** -- Search skills and integrations by query, type, or scope using hybrid search
 - **skill_list** -- List available skills with pagination
 - **skill_get_info** -- Get detailed metadata including input/output schemas and required integrations
 - **skill_execute** -- Execute a skill with validated input; prompts for missing integrations
@@ -200,7 +200,7 @@ Parse the `result` field from the JSON response.
 User: "Find skills for sending emails and send a meeting summary to team@example.com"
 
 Assistant workflow:
-1. Call `skill_search` with `{ "query": "send email" }`
+1. Call `capability_search` with `{ "query": "send email" }`
 2. Review results, pick best match (e.g. `gmail_send_email`)
 3. Call `skill_execute` with the skill and input
 4. Present confirmation to user
@@ -215,7 +215,7 @@ Assistant workflow (no `~/.aident/credentials.json` found):
 3. Tell user: "I've opened Aident in your browser. Please log in and click Approve, then paste the access token shown on screen back here."
 4. User pastes token
 5. Save credentials to `~/.aident/credentials.json`
-6. Call `skill_search` for email skills via REST
+6. Call `capability_search` for email skills via REST
 7. Call `skill_execute` to send the email via REST
 8. Confirm to user
 

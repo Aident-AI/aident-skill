@@ -55,7 +55,7 @@ Both are optional. By default, the skill authenticates via the OOB flow and pers
 | Category | Tools | Examples |
 |----------|-------|---------|
 | **Auth** | 2 | Check status, logout / switch accounts |
-| **Skills** | 4 | Search, list, inspect, execute 1000+ integrations |
+| **Skills & Discovery** | 4 | Search skills & integrations, list, inspect, execute |
 | **Integrations** | 2 | Check connected services, connect new ones |
 | **Playbooks** | 6 | Generate, execute, manage automated workflows |
 | **Templates** | 4 | Browse and instantiate pre-built playbooks |
