@@ -1,171 +1,122 @@
-# REST API Reference
+# OpenAPI Reference
 
-Use the REST API when MCP tools are not available. Same tools, simpler interface -- just Bearer token + JSON.
+Use the OpenAPI surface when an agent host needs raw HTTPS instead of the CLI or MCP. The CLI and MCP servers are wrappers around the same package operations.
 
-## Base URL
+## Base URLs
 
+```text
+https://app.aident.ai/api/openapi/loadout.json
+https://app.aident.ai/api/openapi/loadout/operations
+https://app.aident.ai/api/openapi/loadout/{operationId}
 ```
-https://app.aident.ai/api/mcp/rest
-```
 
-Override with `AIDENT_BASE_URL` to point at a different server:
+Use `AIDENT_BASE_URL` to target another Aident deployment:
 
 ```bash
 export AIDENT_BASE_URL=https://your-server.example.com
 ```
 
-## Getting a Token
+## Getting A Token
 
-Tokens are persisted to `~/.aident/credentials.json` so you only authenticate once. AI agents handle this automatically (see [SKILL.md](../SKILL.md) for the full flow).
+Tokens are persisted to `~/.aident/credentials.json` after `aident login`. For direct HTTPS scripts, export the access token as `AIDENT_TOKEN`.
 
-### Option A: OOB flow (browser copy-paste)
+OAuth endpoints remain under the MCP OAuth namespace because MCP and OpenAPI use the same Aident OAuth server:
 
-Best for scripts and CLI tools that can't run a callback server. The token is saved to `~/.aident/credentials.json` for reuse.
-
-**1. Register a client:**
-
-```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "redirect_uris": ["${AIDENT_BASE_URL:-https://app.aident.ai}/mcp/oob"],
-    "client_name": "My Script",
-    "grant_types": ["authorization_code", "refresh_token"],
-    "response_types": ["code"],
-    "token_endpoint_auth_method": "none"
-  }'
+```text
+POST /api/mcp/oauth/register
+GET  /api/mcp/oauth/authorize
+POST /api/mcp/oauth/token
+POST /api/mcp/oauth/revoke
 ```
 
-Save the `client_id` from the response.
+## Discover Operations
 
-**2. Open in browser:**
-
-```
-${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=${AIDENT_BASE_URL:-https://app.aident.ai}/mcp/oob
-```
-
-**3. Log in and approve.** The token is displayed on screen. Copy it.
-
-**4. Save credentials:**
-
-```bash
-mkdir -p ~/.aident
-cat > ~/.aident/credentials.json << 'EOF'
-{
-  "base_url": "https://app.aident.ai",
-  "client_id": "CLIENT_ID",
-  "access_token": "<paste token here>"
-}
-EOF
-```
-
-Subsequent requests read `access_token` from this file automatically.
-
-### Option B: Standard OAuth 2.1 PKCE
-
-For applications with a callback server (web apps, sophisticated CLI tools).
-
-**1. Register** with your callback URL:
-
-```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "redirect_uris": ["http://localhost:3000/callback"],
-    "client_name": "My App",
-    "grant_types": ["authorization_code", "refresh_token"],
-    "response_types": ["code"],
-    "token_endpoint_auth_method": "none"
-  }'
-```
-
-**2. Generate PKCE pair** (code_verifier + code_challenge).
-
-**3. Open browser** to authorize URL with `code_challenge` and `code_challenge_method=S256`.
-
-**4. Exchange code** for tokens:
-
-```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=authorization_code&client_id=CLIENT_ID&code=AUTH_CODE&code_verifier=VERIFIER&redirect_uri=http://localhost:3000/callback"
-```
-
-**5. Refresh** when expired (access tokens last 1 hour, refresh tokens 30 days):
-
-```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=refresh_token&client_id=CLIENT_ID&refresh_token=REFRESH_TOKEN"
-```
-
-## Calling Tools
-
-### List available tools
+Fetch the Loadout OpenAPI document:
 
 ```bash
 curl -H "Authorization: Bearer $AIDENT_TOKEN" \
-  ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest
+  "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout.json"
 ```
 
-Returns `{ "tools": [{ "name": "...", "description": "...", "inputSchema": {...} }, ...] }`.
-
-### Call a tool
+Fetch compact operation metadata:
 
 ```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
+curl -H "Authorization: Bearer $AIDENT_TOKEN" \
+  "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/operations"
+```
+
+Operation IDs are stable and package-prefixed. Common Loadout operations:
+
+| Operation ID                            | CLI equivalent                         |
+| --------------------------------------- | -------------------------------------- |
+| `loadout_capabilities_search`           | `aident capabilities search`           |
+| `loadout_capabilities_get`              | `aident capabilities get`              |
+| `loadout_capabilities_execute`          | `aident capabilities execute`          |
+| `loadout_capabilities_integration_list` | `aident capabilities integration list` |
+| `loadout_vault_status`                  | `aident vault status`                  |
+| `loadout_vault_connect`                 | `aident vault connect`                 |
+| `loadout_vault_disconnect`              | `aident vault disconnect`              |
+| `loadout_audit_recent`                  | `aident audit recent`                  |
+| `loadout_audit_summary`                 | `aident audit summary`                 |
+
+## Execute Operations
+
+POST the command arguments directly to the operation URL.
+
+```bash
+curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_capabilities_search" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "tool": "capability_search", "arguments": { "query": "send email", "limit": 5 } }'
+  -d '{ "query": "send email", "limit": 5 }'
 ```
 
-Returns `{ "result": { ... } }`.
-
-### More examples
+Execute a capability:
 
 ```bash
-# Execute a skill
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
+curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_capabilities_execute" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{
-    "tool": "skill_execute",
-    "arguments": {
-      "skillName": "gmail_send_email",
-      "input": { "to": "team@example.com", "subject": "Notes", "body": "..." }
-    }
+    "name": "gmail.send_email",
+    "input": { "to": "team@example.com", "subject": "Notes", "body": "..." }
   }'
+```
 
-# List playbooks
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
+Check Vault connection status:
+
+```bash
+curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_vault_status" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "tool": "playbook_list", "arguments": {} }'
+  -d '{}'
+```
 
-# Check integrations
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/rest \
+Audit recent Loadout action calls:
+
+```bash
+curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_audit_summary" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "tool": "integration_status", "arguments": {} }'
+  -d '{ "limit": 50 }'
 ```
 
 ## Error Handling
 
-| HTTP Status | Meaning |
-|-------------|---------|
-| 200 | Success -- check `result` field |
-| 400 | Invalid request body |
-| 401 | Invalid or expired token -- refresh and retry |
-| 500 | Tool execution error -- check `error` field |
+| HTTP Status | Meaning                                                              |
+| ----------- | -------------------------------------------------------------------- |
+| 200         | Success. Check the returned `success` field.                         |
+| 400         | Invalid request body or unsupported operation.                       |
+| 401         | Invalid or expired token. Reauthenticate or refresh.                 |
+| 403         | Authenticated account lacks the required package or operation scope. |
+| 426         | CLI/client version is too old for this server.                       |
+| 500         | Operation execution error. Check the returned `error` field.         |
 
 ## Advanced Overrides
 
-These environment variables are optional power-user overrides. By default, the skill reads tokens from `~/.aident/credentials.json`.
-
-| Variable | Purpose |
-|----------|---------|
-| `AIDENT_TOKEN` | Skip credential file and use this Bearer token directly |
-| `AIDENT_BASE_URL` | Override the default server (`https://app.aident.ai`) |
+| Variable          | Purpose                                                  |
+| ----------------- | -------------------------------------------------------- |
+| `AIDENT_TOKEN`    | Skip credential file and use this Bearer token directly. |
+| `AIDENT_BASE_URL` | Override the default server (`https://app.aident.ai`).   |
 
 ## Rate Limits
 

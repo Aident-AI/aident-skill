@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test MCP REST API and OOB OAuth flow
+# Test OpenAPI package API and OOB OAuth flow
 # Usage: ./aident-skill/scripts/test-rest-api.sh [BASE_URL]
 #
 # Credentials are saved to ~/.aident/credentials.json so you only need
@@ -65,7 +65,7 @@ with open('$CRED_FILE', 'w') as f: json.dump(d, f, indent=2)
 # ------------------------------------------------------------------
 # Step 1: Resolve credentials
 # ------------------------------------------------------------------
-bold "=== MCP REST API E2E Test ==="
+bold "=== OpenAPI Package API E2E Test ==="
 echo ""
 
 # Priority: CLI arg > AIDENT_TOKEN env > credentials file > OOB flow
@@ -146,47 +146,61 @@ if [ -z "${ACCESS_TOKEN:-}" ]; then
 fi
 
 # ------------------------------------------------------------------
-bold "Step 3: Test REST endpoint"
+bold "Step 3: Test OpenAPI endpoint"
 echo ""
+OPENAPI_DOC_PATH="$BASE_URL/api/openapi/loadout.json"
+OPENAPI_OPS_PATH="$BASE_URL/api/openapi/loadout/operations"
+OPENAPI_EXEC_PATH="$BASE_URL/api/openapi/loadout"
 
-# Test 3a: GET /api/mcp/rest — list tools (authenticated)
-bold "  3a. GET /api/mcp/rest — list tools"
-LIST_RESPONSE=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/mcp/rest" \
+# Test 3a: GET /api/openapi/loadout.json -- fetch schema (authenticated)
+bold "  3a. GET /api/openapi/loadout.json -- fetch schema"
+LIST_RESPONSE=$(curl -s -w "\n%{http_code}" "$OPENAPI_DOC_PATH" \
   -H "Authorization: Bearer $ACCESS_TOKEN")
 LIST_STATUS=$(echo "$LIST_RESPONSE" | tail -1)
 LIST_BODY=$(echo "$LIST_RESPONSE" | sed '$d')
 
-assert_status "List tools" 200 "$LIST_STATUS"
-assert_json_field "List response" "$LIST_BODY" "tools"
-TOOL_COUNT=$(echo "$LIST_BODY" | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('tools',[])))" 2>/dev/null || echo "0")
-assert_json_value "Has at least 22 tools" "$LIST_BODY" "len(d['tools']) >= 22"
-echo "  Tool count: $TOOL_COUNT"
+assert_status "Fetch OpenAPI document" 200 "$LIST_STATUS"
+assert_json_field "OpenAPI response" "$LIST_BODY" "paths"
+assert_json_field "OpenAPI response" "$LIST_BODY" "x-aident-command-catalog"
+assert_json_value "Has Loadout capabilities search operation" "$LIST_BODY" "'/api/openapi/loadout/loadout_capabilities_search' in d['paths']"
 echo ""
 
-# Test 3b: POST /api/mcp/rest — call auth_status
-bold "  3b. POST /api/mcp/rest — call auth_status"
-AUTH_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"tool": "auth_status", "arguments": {}}')
+# Test 3b: GET /api/openapi/loadout/operations -- compact operations
+bold "  3b. GET /api/openapi/loadout/operations -- compact operations"
+AUTH_RESPONSE=$(curl -s -w "\n%{http_code}" "$OPENAPI_OPS_PATH" \
+  -H "Authorization: Bearer $ACCESS_TOKEN")
 AUTH_STATUS=$(echo "$AUTH_RESPONSE" | tail -1)
 AUTH_BODY=$(echo "$AUTH_RESPONSE" | sed '$d')
 
-assert_status "Call auth_status" 200 "$AUTH_STATUS"
-assert_json_field "auth_status response" "$AUTH_BODY" "result"
+assert_status "Fetch operations" 200 "$AUTH_STATUS"
+assert_json_field "operations response" "$AUTH_BODY" "commands"
+assert_json_value "Has Loadout vault status operation" "$AUTH_BODY" "any(c.get('operationId') == 'loadout_vault_status' for c in d['commands'])"
 echo ""
 
-# Test 3c: POST /api/mcp/rest — call capability_search
-bold "  3c. POST /api/mcp/rest — call capability_search"
-SEARCH_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
+# Test 3c: POST operation -- call vault status
+bold "  3c. POST /api/openapi/loadout/loadout_vault_status -- call vault status"
+VAULT_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_vault_status" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"tool": "capability_search", "arguments": {"query": "send email", "limit": 3}}')
+  -d '{}')
+VAULT_STATUS=$(echo "$VAULT_RESPONSE" | tail -1)
+VAULT_BODY=$(echo "$VAULT_RESPONSE" | sed '$d')
+
+assert_status "Call vault status" 200 "$VAULT_STATUS"
+assert_json_field "vault response" "$VAULT_BODY" "success"
+echo ""
+
+# Test 3d: POST operation -- call capabilities search
+bold "  3d. POST /api/openapi/loadout/loadout_capabilities_search -- call capabilities search"
+SEARCH_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_capabilities_search" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "send email", "limit": 3}')
 SEARCH_STATUS=$(echo "$SEARCH_RESPONSE" | tail -1)
 SEARCH_BODY=$(echo "$SEARCH_RESPONSE" | sed '$d')
 
-assert_status "Call capability_search" 200 "$SEARCH_STATUS"
-assert_json_field "capability_search response" "$SEARCH_BODY" "result"
+assert_status "Call capabilities_search" 200 "$SEARCH_STATUS"
+assert_json_field "capabilities_search response" "$SEARCH_BODY" "success"
 echo ""
 
 # ------------------------------------------------------------------
@@ -195,7 +209,7 @@ echo ""
 
 # Test 4a: No auth header — expect 401
 bold "  4a. GET without auth — expect 401"
-NOAUTH_RESPONSE=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/mcp/rest")
+NOAUTH_RESPONSE=$(curl -s -w "\n%{http_code}" "$OPENAPI_DOC_PATH")
 NOAUTH_STATUS=$(echo "$NOAUTH_RESPONSE" | tail -1)
 NOAUTH_BODY=$(echo "$NOAUTH_RESPONSE" | sed '$d')
 
@@ -205,7 +219,7 @@ echo ""
 
 # Test 4b: Invalid token — expect 401
 bold "  4b. GET with invalid token — expect 401"
-BADTOKEN_RESPONSE=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/mcp/rest" \
+BADTOKEN_RESPONSE=$(curl -s -w "\n%{http_code}" "$OPENAPI_DOC_PATH" \
   -H "Authorization: Bearer invalid-token-12345")
 BADTOKEN_STATUS=$(echo "$BADTOKEN_RESPONSE" | tail -1)
 
@@ -214,10 +228,10 @@ echo ""
 
 # Test 4c: POST with malformed body — expect 400
 bold "  4c. POST with bad body — expect 400"
-BADBODY_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
+BADBODY_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_capabilities_search" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"not_a_tool": true}')
+  -d '[]')
 BADBODY_STATUS=$(echo "$BADBODY_RESPONSE" | tail -1)
 BADBODY_BODY=$(echo "$BADBODY_RESPONSE" | sed '$d')
 
@@ -227,7 +241,7 @@ echo ""
 
 # Test 4d: POST with non-JSON body — expect 400
 bold "  4d. POST with non-JSON body — expect 400"
-NONJSON_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
+NONJSON_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_capabilities_search" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d 'not json at all')
@@ -236,17 +250,14 @@ NONJSON_STATUS=$(echo "$NONJSON_RESPONSE" | tail -1)
 assert_status "Non-JSON body" 400 "$NONJSON_STATUS"
 echo ""
 
-# Test 4e: POST with unknown tool — should return 200 with error in result
-bold "  4e. POST with nonexistent tool"
-UNKNOWN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/mcp/rest" \
+# Test 4e: POST with unknown operation -- expect 404
+bold "  4e. POST with nonexistent operation -- expect 404"
+UNKNOWN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_nonexistent_operation" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"tool": "nonexistent_tool_xyz", "arguments": {}}')
+  -d '{}')
 UNKNOWN_STATUS=$(echo "$UNKNOWN_RESPONSE" | tail -1)
-echo "  Status: $UNKNOWN_STATUS (tool-not-found behavior)"
-TOTAL=$((TOTAL + 1))
-PASS=$((PASS + 1))
-green "  PASS  Unknown tool returns response (HTTP $UNKNOWN_STATUS)"
+assert_status "Unknown operation" 404 "$UNKNOWN_STATUS"
 echo ""
 
 # ------------------------------------------------------------------

@@ -3,15 +3,17 @@
 ## Authentication Issues
 
 If the OAuth flow doesn't start automatically:
+
 1. Restart your MCP client
-2. Verify URL is exactly `https://app.aident.ai/api/mcp`
+2. Verify URL is exactly `https://app.aident.ai/loadout/mcp`
 3. Check that your browser can reach app.aident.ai
 
 ## "Missing required integrations"
 
 The skill needs integrations you haven't connected:
-1. Run `integration_status` to see what's connected
-2. Run `integration_connect` with the missing integration name
+
+1. Run `vault` with `{ "action": "status" }` to see what's connected
+2. Run `vault` with `{ "action": "connect", "integrationId": "<id>" }` for the missing integration
 3. Authorize in browser when prompted
 4. Retry the operation
 
@@ -62,14 +64,17 @@ The token display is one-time and expires after 5 minutes. Start a new authoriza
 Tokens are persisted to `~/.aident/credentials.json`. If you experience auth problems:
 
 **Force re-authentication:**
+
 ```bash
 rm ~/.aident/credentials.json
 ```
 
 **Check file permissions:**
+
 ```bash
 ls -la ~/.aident/credentials.json
 ```
+
 The file should be readable by your user. If not: `chmod 600 ~/.aident/credentials.json`.
 
 **Verify contents:**

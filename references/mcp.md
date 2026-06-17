@@ -2,13 +2,14 @@
 
 Connect your AI assistant to Aident via the Model Context Protocol.
 
-## Server URL
+## Server URLs
 
-```
-https://app.aident.ai/api/mcp
-```
+Use the MCP URL for the package the user needs:
 
-Set `AIDENT_BASE_URL` to override (e.g. `$AIDENT_BASE_URL/api/mcp`).
+- Loadout integrations: `https://app.aident.ai/loadout/mcp`
+- Playbook workflows: `https://app.aident.ai/playbook/mcp`
+
+Set `AIDENT_BASE_URL` to override (e.g. `$AIDENT_BASE_URL/loadout/mcp`).
 
 ## Client Configuration
 
@@ -17,7 +18,7 @@ Set `AIDENT_BASE_URL` to override (e.g. `$AIDENT_BASE_URL/api/mcp`).
 Run in your terminal:
 
 ```bash
-claude mcp add --transport http aident https://app.aident.ai/api/mcp
+claude mcp add --transport http aident https://app.aident.ai/loadout/mcp
 ```
 
 Or add to `~/.claude.json`:
@@ -27,7 +28,7 @@ Or add to `~/.claude.json`:
   "mcpServers": {
     "aident": {
       "type": "http",
-      "url": "https://app.aident.ai/api/mcp"
+      "url": "https://app.aident.ai/loadout/mcp"
     }
   }
 }
@@ -42,13 +43,13 @@ Add to your config file (`~/Library/Application Support/Claude/claude_desktop_co
   "mcpServers": {
     "aident": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://app.aident.ai/api/mcp"]
+      "args": ["-y", "mcp-remote", "https://app.aident.ai/loadout/mcp"]
     }
   }
 }
 ```
 
-Or on **Pro/Max/Team/Enterprise** plans: **Settings → Connectors → Add** and enter `https://app.aident.ai/api/mcp`.
+Or on **Pro/Max/Team/Enterprise** plans: **Settings → Connectors → Add** and enter `https://app.aident.ai/loadout/mcp`.
 
 ### Cursor IDE
 
@@ -58,7 +59,7 @@ Add to `.cursor/mcp.json` in your project root:
 {
   "mcpServers": {
     "aident": {
-      "url": "https://app.aident.ai/api/mcp"
+      "url": "https://app.aident.ai/loadout/mcp"
     }
   }
 }
@@ -73,7 +74,7 @@ Add to `.vscode/mcp.json` in your project root:
   "servers": {
     "aident": {
       "type": "http",
-      "url": "https://app.aident.ai/api/mcp"
+      "url": "https://app.aident.ai/loadout/mcp"
     }
   }
 }
@@ -87,7 +88,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 {
   "mcpServers": {
     "aident": {
-      "serverUrl": "https://app.aident.ai/api/mcp"
+      "serverUrl": "https://app.aident.ai/loadout/mcp"
     }
   }
 }
@@ -98,7 +99,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 Go to Settings → MCP Servers → Add Server, then enter:
 
 ```
-https://app.aident.ai/api/mcp
+https://app.aident.ai/loadout/mcp
 ```
 
 ### Gemini CLI
@@ -109,7 +110,7 @@ Add to `~/.gemini/settings.json`:
 {
   "mcpServers": {
     "aident": {
-      "httpUrl": "https://app.aident.ai/api/mcp"
+      "httpUrl": "https://app.aident.ai/loadout/mcp"
     }
   }
 }
@@ -117,20 +118,20 @@ Add to `~/.gemini/settings.json`:
 
 ### Other MCP Clients
 
-Any MCP-compatible client (Codex, Goose, Kiro, OpenCode, Antigravity, Factory, etc.) can connect using the server URL `https://app.aident.ai/api/mcp`. Refer to your client's documentation for where to add MCP server configurations.
+Any MCP-compatible client (Codex, Goose, Kiro, OpenCode, Antigravity, Factory, etc.) can connect using the server URL `https://app.aident.ai/loadout/mcp`. Refer to your client's documentation for where to add MCP server configurations.
 
 ## Authentication
 
 On first connection, your MCP client opens a browser window for OAuth sign-in. After authorizing, you're connected automatically. No manual token management needed.
 
-To log out or switch accounts, use the `auth_logout` tool, then reconnect to sign in with a different account.
+To log out or switch accounts, use the `auth` tool with `{ "action": "logout" }`, then reconnect to sign in with a different account.
 
 ## Verify Connection
 
-Ask your AI assistant to use an Aident tool. You should see 22 tools available. Try:
+Ask your AI assistant to use an Aident tool. You should see the focused Loadout tools available. Try:
 
 ```
-Use Aident to list my available skills
+Use Aident to list my available capabilities
 ```
 
 See [SKILL.md](../SKILL.md) for the full tool list.

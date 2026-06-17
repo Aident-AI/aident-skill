@@ -1,83 +1,128 @@
 # Aident Skill
 
 [![Skills.sh](https://img.shields.io/badge/skills.sh-aident--skill-blue)](https://skills.sh/skills/aident-ai/aident-skill)
+[![npm](https://img.shields.io/npm/v/%40aident-ai%2Fcli?label=%40aident-ai%2Fcli)](https://www.npmjs.com/package/@aident-ai/cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Access [Aident](https://aident.ai)'s 1000+ integrations and automation platform from any AI assistant. Works with MCP clients and REST-only agents.
+Access [Aident Loadout](https://aident.ai)'s external-service integrations from any AI assistant. The recommended interface is `@aident-ai/cli`, which defaults to the Loadout package; MCP works as a fallback.
 
-## Install
+## One-line install (recommended)
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://app.aident.ai/cli/install.sh | bash
+```
+
+**Windows (PowerShell, with Git Bash installed):**
+
+```powershell
+& "C:\Program Files\Git\bin\bash.exe" -c 'curl -fsSL https://app.aident.ai/cli/install.sh | bash'
+```
+
+The installer requires Node ≥ 18, runs `npm install -g @aident-ai/cli`, then `aident doctor` to verify.
+
+## Install the skill
+
+The CLI is most useful when paired with this skill, which gives your coding agent the focused Loadout command surface:
 
 ```bash
 npx skills add aident-ai/aident-skill
 ```
 
-This installs the skill definition into your project. Your AI assistant reads it and automatically picks the best mode -- MCP tools if available, REST API otherwise.
+## Post-install
+
+```bash
+aident doctor   # Validate installation
+aident setup    # Interactive setup wizard (optional)
+aident login    # Authenticate (opens browser)
+```
 
 ## How It Works
 
-### MCP (recommended)
+### CLI (recommended)
 
-Best experience. Your AI assistant gets direct access to 22 tools via the MCP protocol.
+The fastest path. Works with any agent that can shell out — one package, one binary, focused Loadout commands.
 
-Configure your client manually if needed -- see [references/mcp.md](references/mcp.md) for all clients (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI, etc.).
+```bash
+aident login                                              # one-time auth
+aident capabilities search --query "send email" --json
+aident capabilities execute --name gmail.send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
+aident vault status --integrationId gmail_tools --json
+aident audit recent --limit 20 --json
+```
+
+`@aident-ai/cli` defaults to the Loadout package surface. `aident --help` returns the live Loadout command catalog from the OpenAPI document -- no hard-coded tool lists, no version drift. If installing globally is impossible, examples also work as `npx -y @aident-ai/cli ...`.
+
+### MCP (fallback)
+
+Configure your MCP client to talk to `https://app.aident.ai/loadout/mcp`. For Playbook workflows, configure `https://app.aident.ai/playbook/mcp` as a separate MCP server. See [references/mcp.md](references/mcp.md) for client-specific setup (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI).
 
 **Quick setup for Claude Code:**
-```bash
-claude mcp add --transport http aident https://app.aident.ai/api/mcp
-```
-
-### REST API
-
-For agents without MCP support. Same 22 tools, simpler HTTP interface.
-
-1. Authenticate via the OOB flow -- tokens are persisted to `~/.aident/credentials.json` automatically
-2. POST to `https://app.aident.ai/api/mcp/rest` with `{ "tool": "...", "arguments": {...} }`
-3. See [examples/curl/](examples/curl/) for ready-to-use examples
-
-### Advanced Overrides
-
-Set `AIDENT_BASE_URL` to point at a different server (default: `https://app.aident.ai`):
 
 ```bash
-export AIDENT_BASE_URL=https://your-server.example.com
+claude mcp add --transport http aident https://app.aident.ai/loadout/mcp
 ```
 
-Set `AIDENT_TOKEN` to skip the OOB auth flow and use a token directly:
+### Direct OpenAPI (advanced)
+
+The public API surface is exposed through OpenAPI at `/api/openapi/loadout.json` (see [references/api.md](references/api.md)). The CLI and MCP surfaces are wrappers around the same package operations, so prefer the CLI unless the host needs raw HTTP.
+
+## Configuration
+
+The CLI persists settings to `~/.aident/config.json` and credentials to `~/.aident/credentials.json` — the same `~/.aident/` folder used by every other Aident tool.
 
 ```bash
-export AIDENT_TOKEN=your-bearer-token
+aident config set baseUrl https://your-host.example.com   # persistent
+aident config show                                        # see all values
+aident config path                                        # print the file path
 ```
 
-Both are optional. By default, the skill authenticates via the OOB flow and persists tokens to `~/.aident/credentials.json`.
+| Variable          | Purpose                                                                   |
+| ----------------- | ------------------------------------------------------------------------- |
+| `AIDENT_BASE_URL` | Override the server for one invocation (default: `https://app.aident.ai`) |
+| `AIDENT_TOKEN`    | Skip the credentials file and use this Bearer token directly              |
+| `AIDENT_PACKAGE`  | Optional one-off package focus, e.g. `loadout`                            |
+
+### Where files live
+
+| Path                                 | Owner               | Purpose                                 |
+| ------------------------------------ | ------------------- | --------------------------------------- |
+| `~/.aident/config.json`              | CLI                 | Persistent settings (`baseUrl`, …)      |
+| `~/.aident/credentials.json`         | CLI + skill (REST)  | OAuth tokens for `aident` and the skill |
+| `~/.aident/sandbox-credentials.json` | Sandbox desktop app | Tokens for the local sandbox runtime    |
+| `~/.aident/sandbox-workspaces.json`  | Sandbox desktop app | Tracked workspace directories           |
+| `~/.aident/sandbox/`                 | Sandbox daemon      | Daemon PID, status, logs                |
 
 ## What You Get
 
-| Category | Tools | Examples |
-|----------|-------|---------|
-| **Auth** | 2 | Check status, logout / switch accounts |
-| **Skills & Discovery** | 4 | Search skills & integrations, list, inspect, execute |
-| **Integrations** | 2 | Check connected services, connect new ones |
-| **Playbooks** | 6 | Generate, execute, manage automated workflows |
-| **Templates** | 4 | Browse and instantiate pre-built playbooks |
-| **Dashboard** | 4 | Monitor active playbooks and executions |
+| Category         | Examples                                         |
+| ---------------- | ------------------------------------------------ |
+| **Discovery**    | Search integrations and actions                  |
+| **Details**      | Inspect schemas and integration metadata         |
+| **Execution**    | Execute connected integration actions            |
+| **Vault**        | Check, connect, and disconnect external services |
+| **Audit**        | Review recent Loadout action-call usage          |
+| **Auth helpers** | MCP `auth` tool, CLI login/whoami/logout         |
 
-See [SKILL.md](./SKILL.md) for full tool descriptions and dual-mode usage instructions.
+See [SKILL.md](./SKILL.md) for the full instructional spec. Run `aident --help` for the live command list filtered to Loadout and your access.
 
 ## Authentication
 
-**MCP clients:** OAuth sign-in opens automatically on first use. Tokens are managed by the client.
+**CLI:** `aident login` opens a browser for OAuth (PKCE on a localhost loopback). Falls back to OOB copy-paste with `--oob`. Tokens auto-refresh on 401.
 
-**REST API:** On first use, the OOB flow opens a browser for login. Tokens are saved to `~/.aident/credentials.json` and reused across sessions. See [references/api.md](references/api.md) and [SKILL.md](./SKILL.md) for the full flow.
+**MCP clients:** OAuth sign-in is initiated by the MCP client on first use; tokens are managed by the client.
 
-**Prerequisites**: [Aident account](https://app.aident.ai) with connected integrations (Gmail, Slack, GitHub, etc.)
+**Prerequisites:** [Aident account](https://app.aident.ai) with relevant integrations connected (Gmail, Slack, GitHub, …).
 
 ## Links
 
+- [CLI on npm](https://www.npmjs.com/package/@aident-ai/cli)
+- [Install script](https://app.aident.ai/cli/install.sh)
 - [MCP Client Setup](references/mcp.md)
-- [REST API Reference](references/api.md)
+- [OpenAPI Reference](references/api.md)
 - [Troubleshooting](references/troubleshooting.md)
 - [Setup Guide](https://docs.aident.ai/documentation/mcp-server-setup)
-- [API Reference](https://docs.aident.ai/documentation/mcp-api-reference)
 - [Discord](https://discord.gg/hxtEYHuW26)
 
 ## License
