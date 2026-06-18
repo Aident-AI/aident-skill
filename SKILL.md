@@ -120,7 +120,7 @@ After configuring MCP, call these Loadout tools directly:
 ## Error Handling
 
 - `not-authenticated`: run `aident login`, or call MCP `auth` with `{ "action": "login" }`.
-- Missing integration: run `aident vault connect --integrationId <id> --json`, or call MCP `vault` with `{ "action": "connect", "integrationId": "<id>" }`.
+- Missing integration: run `aident vault connect --integrationId <id> --json`, or call MCP `vault` with `{ "action": "connect", "integrationId": "<id>" }`. If the response says credentials are required, agent callers should send the returned `connectUrl` to the user so they enter the API key or access token in Aident Loadout/Vault; direct scripts may submit plaintext `credentials` intentionally.
 - Schema/validation error: run `aident capabilities get --name <action> --json`, fix the input, and retry.
 - Forbidden/scope error: explain the missing permission and ask the user to reconnect or authorize the requested service.
 
