@@ -56,12 +56,12 @@ aident audit recent --limit 20 --json
 
 ### MCP (fallback)
 
-Configure your MCP client to talk to `https://app.aident.ai/loadout/mcp`. For Playbook workflows, configure `https://app.aident.ai/playbook/mcp` as a separate MCP server. See [references/mcp.md](references/mcp.md) for client-specific setup (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI).
+Configure your MCP client to talk to `https://loadout.aident.ai/mcp`. For Playbook workflows, configure `https://app.aident.ai/playbook/mcp` as a separate MCP server. See [references/mcp.md](references/mcp.md) for client-specific setup (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, ChatGPT, Gemini CLI).
 
 **Quick setup for Claude Code:**
 
 ```bash
-claude mcp add --transport http aident https://app.aident.ai/loadout/mcp
+claude mcp add --transport http aident https://loadout.aident.ai/mcp
 ```
 
 ### Direct OpenAPI (advanced)

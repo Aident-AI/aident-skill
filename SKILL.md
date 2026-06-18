@@ -2,7 +2,7 @@
 name: aident-loadout-skill
 description: Access Aident managed external-service integrations through Loadout CLI or MCP.
 author: Aident
-homepage: https://app.aident.ai/loadout
+homepage: https://loadout.aident.ai
 repository: https://github.com/aident-ai/aident-skill
 tags:
   - loadout
@@ -96,16 +96,16 @@ aident audit recent --limit 20 --json
 Use MCP mode when the host cannot run the CLI or already has MCP tools configured. Configure the MCP client with:
 
 ```text
-https://app.aident.ai/loadout/mcp
+https://loadout.aident.ai/mcp
 ```
 
 Common setup snippets:
 
-- Claude Code: `claude mcp add --transport http aident-loadout https://app.aident.ai/loadout/mcp`
-- Claude Desktop: `{"mcpServers":{"aident-loadout":{"command":"npx","args":["-y","mcp-remote","https://app.aident.ai/loadout/mcp"]}}}`
-- Cursor: `.cursor/mcp.json` -> `{"mcpServers":{"aident-loadout":{"url":"https://app.aident.ai/loadout/mcp"}}}`
-- VS Code: `.vscode/mcp.json` -> `{"servers":{"aident-loadout":{"type":"http","url":"https://app.aident.ai/loadout/mcp"}}}`
-- Codex: `codex mcp add aident-loadout --url https://app.aident.ai/loadout/mcp`
+- Claude Code: `claude mcp add --transport http aident-loadout https://loadout.aident.ai/mcp`
+- Claude Desktop: `{"mcpServers":{"aident-loadout":{"command":"npx","args":["-y","mcp-remote","https://loadout.aident.ai/mcp"]}}}`
+- Cursor: `.cursor/mcp.json` -> `{"mcpServers":{"aident-loadout":{"url":"https://loadout.aident.ai/mcp"}}}`
+- VS Code: `.vscode/mcp.json` -> `{"servers":{"aident-loadout":{"type":"http","url":"https://loadout.aident.ai/mcp"}}}`
+- Codex: `codex mcp add aident-loadout --url https://loadout.aident.ai/mcp`
 
 After configuring MCP, call these Loadout tools directly:
 
@@ -135,5 +135,5 @@ After configuring MCP, call these Loadout tools directly:
 ## Support
 
 - Docs: https://docs.aident.ai
-- Loadout: https://app.aident.ai/loadout
+- Loadout: https://loadout.aident.ai
 - Help: help@aident.ai

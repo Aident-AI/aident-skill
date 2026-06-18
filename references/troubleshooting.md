@@ -5,8 +5,8 @@
 If the OAuth flow doesn't start automatically:
 
 1. Restart your MCP client
-2. Verify URL is exactly `https://app.aident.ai/loadout/mcp`
-3. Check that your browser can reach app.aident.ai
+2. Verify URL is exactly `https://loadout.aident.ai/mcp`
+3. Check that your browser can reach loadout.aident.ai
 
 ## "Missing required integrations"
 
