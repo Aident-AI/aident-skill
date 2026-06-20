@@ -47,7 +47,7 @@ The fastest path. Works with any agent that can shell out — one package, one b
 ```bash
 aident login                                              # one-time auth
 aident capabilities search --query "send email" --json
-aident capabilities execute --name gmail.send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
+aident capabilities execute --name gmail_tools.gmail_send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
 aident vault status --integrationId gmail_tools --json
 aident audit recent --limit 20 --json
 ```

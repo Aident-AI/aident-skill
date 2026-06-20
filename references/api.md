@@ -77,7 +77,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/load
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{
-    "name": "gmail.send_email",
+    "name": "gmail_tools.gmail_send_email",
     "input": { "to": "team@example.com", "subject": "Notes", "body": "..." }
   }'
 ```

@@ -45,6 +45,14 @@ For Playbook generation, execution, or management, stop here and read the separa
 
    If the installer is unavailable, use `npm install -g @aident-ai/cli` or run commands as `npx -y @aident-ai/cli ...`.
 
+   Release testers can target RC explicitly:
+
+   ```bash
+   export AIDENT_BASE_URL=https://rc.app.aident.ai
+   export AIDENT_LOADOUT_MCP_URL=https://rc.loadout.aident.ai/mcp
+   export AIDENT_CLI_PACKAGE=@aident-ai/cli@rc
+   ```
+
 2. **Authenticate**:
 
    ```bash
@@ -80,8 +88,8 @@ CLI mode is preferred when the host can run shell commands.
 
 ```bash
 aident capabilities search --query "send email" --json
-aident capabilities get --name gmail.send_email --json
-aident capabilities execute --name gmail.send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
+aident capabilities get --name gmail_tools.gmail_send_email --json
+aident capabilities execute --name gmail_tools.gmail_send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
 aident capabilities integration list --json
 aident vault status --integrationIds gmail_tools --json
 aident vault connect --integrationId gmail_tools --json
@@ -106,6 +114,8 @@ Common setup snippets:
 - Cursor: `.cursor/mcp.json` -> `{"mcpServers":{"aident-loadout":{"url":"https://loadout.aident.ai/mcp"}}}`
 - VS Code: `.vscode/mcp.json` -> `{"servers":{"aident-loadout":{"type":"http","url":"https://loadout.aident.ai/mcp"}}}`
 - Codex: `codex mcp add aident-loadout --url https://loadout.aident.ai/mcp`
+
+For RC testing, use `https://rc.loadout.aident.ai/mcp` as the MCP URL.
 
 After configuring MCP, call these Loadout tools directly:
 
