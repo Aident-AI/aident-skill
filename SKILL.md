@@ -70,6 +70,10 @@ For Playbook generation, execution, or management, stop here and read the separa
 
    If `whoami` returns a `userId`, setup is complete.
 
+4. **Connect integrations**:
+
+   Guide the user to https://loadout.aident.ai/integrations so they can connect the services they want the agent to use.
+
 ## When To Use Loadout
 
 Use Loadout whenever an agent needs to discover, connect, call, or audit an external service:
@@ -114,6 +118,8 @@ Common setup snippets:
 - Cursor: `.cursor/mcp.json` -> `{"mcpServers":{"aident-loadout":{"url":"https://loadout.aident.ai/mcp"}}}`
 - VS Code: `.vscode/mcp.json` -> `{"servers":{"aident-loadout":{"type":"http","url":"https://loadout.aident.ai/mcp"}}}`
 - Codex: `codex mcp add aident-loadout --url https://loadout.aident.ai/mcp`
+
+After configuring MCP, guide the user to https://loadout.aident.ai/integrations so they can connect the services they want the agent to use.
 
 For RC testing, use `https://rc.loadout.aident.ai/mcp` as the MCP URL.
 

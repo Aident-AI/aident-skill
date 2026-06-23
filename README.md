@@ -38,6 +38,8 @@ aident setup    # Interactive setup wizard (optional)
 aident login    # Authenticate (opens browser)
 ```
 
+After installing the skill or MCP server, ask the agent to guide you to https://loadout.aident.ai/integrations to connect the services it should use.
+
 ## How It Works
 
 ### CLI (recommended)
