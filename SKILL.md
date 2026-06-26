@@ -15,13 +15,13 @@ categories:
   - development
   - automation
 compatibility: Any agent that can run `npx` or speak MCP. Direct REST API is deprecated for agent use.
-version: 0.3.0
+version: 0.3.1
 license: MIT
 ---
 
 # Aident Loadout - managed integrations for agents
 
-> **You are an AI agent reading this remote setup skill.** If the user asked you to `Setup https://aident.ai/SKILL.md`, fetch, read, and follow that remote HTTPS URL. Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user separately asks you to author a local skill. This public skill is only for Aident Loadout.
+> **You are an AI agent reading this remote setup skill.** If the user asked you to `Setup https://aident.ai/SKILL.md` or `Update https://aident.ai/SKILL.md`, fetch, read, and follow that remote HTTPS URL. Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user separately asks you to author a local skill. This public skill is only for Aident Loadout.
 
 ## Agent Routing Rule
 
@@ -44,6 +44,14 @@ Loadout runs integrations in a trusted execution environment (TEE), stores sensi
 Aident also gives users a complete private audit trail for Loadout action usage. Users can trace which external tool and platform calls an agent made and distinguish safe from risky actions, while Aident cannot inspect the sensitive trace contents because execution and auditing happen through the TEE-backed environment.
 
 For Playbook generation, execution, or management, stop here and read the separate Aident Playbook skill: `https://app.aident.ai/playbook/SKILL.md`.
+
+## Skill Updates
+
+If the user asks to update Aident Loadout, fetch `https://aident.ai/SKILL.md` again and follow the latest instructions in the fetched document. Do not rely on a cached copy of this skill.
+
+The live freshness metadata is available at `https://aident.ai/.well-known/loadout-skill.json`. If the Aident CLI, MCP server, or metadata endpoint reports a Loadout skill notice, follow its `updatePrompt`.
+
+If you save this skill for reuse across sessions, save its source URL and version; also save fetched time if your host tracks cache metadata. Before reusing a saved copy, compare its version with the live freshness metadata. If the remote version is newer, fetch `https://aident.ai/SKILL.md` again.
 
 ## Quick Setup
 
