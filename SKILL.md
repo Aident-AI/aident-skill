@@ -21,7 +21,7 @@ license: MIT
 
 # Aident Loadout - managed integrations for agents
 
-> **You are an AI agent reading this remote setup skill.** If the user asked you to `Setup https://aident.ai/SKILL.md` or `Update https://aident.ai/SKILL.md`, fetch, read, and follow that remote HTTPS URL. Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user separately asks you to author a local skill. This public skill is only for Aident Loadout.
+> **You are an AI agent reading this remote setup skill.** If the user asked you to `Setup https://aident.ai/SKILL.md` or `Update https://aident.ai/SKILL.md`, fetch, read, and follow that remote HTTPS URL. Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user separately asks you to author a local skill. The source URL for this fetched copy is `https://aident.ai/SKILL.md`. This public skill is only for Aident Loadout.
 
 ## Agent Routing Rule
 
@@ -59,12 +59,12 @@ Guide the user through setup instead of handing them commands to run. If your ho
 
 Use Aident Loadout setup language throughout this flow. Do not frame this as a generic skill installation, local skill authoring task, repo-native setup, or a choice of skill install location/name. Do not tell the user to restart their agent unless this setup actually changed MCP or host-level configuration and that host requires a restart.
 
-Release testers can target RC explicitly before starting setup:
+This fetched skill targets its own environment. Keep these variables set before starting setup:
 
 ```bash
-export AIDENT_BASE_URL=https://rc.app.aident.ai
-export AIDENT_LOADOUT_MCP_URL=https://rc.loadout.aident.ai/mcp
-export AIDENT_CLI_PACKAGE=@aident-ai/cli@rc
+export AIDENT_BASE_URL=https://app.aident.ai
+export AIDENT_LOADOUT_MCP_URL=https://loadout.aident.ai/mcp
+export AIDENT_CLI_PACKAGE=@aident-ai/cli
 ```
 
 ### Stage 1: Introduce
@@ -105,7 +105,7 @@ Agent action:
   curl -fsSL https://app.aident.ai/cli/install.sh | bash
   ```
 
-- If the installer is unavailable, use `npm install -g @aident-ai/cli` or run commands as `npx -y @aident-ai/cli ...`.
+- If the installer is unavailable, use `npm install -g $AIDENT_CLI_PACKAGE` or run commands as `npx -y $AIDENT_CLI_PACKAGE ...`.
 - If Aident CLI is already installed, send:
 
   ```text
@@ -252,7 +252,7 @@ Common setup snippets:
 
 After configuring MCP, guide the user to https://loadout.aident.ai/integrations so they can connect the tools and platforms they want the agent to use.
 
-For RC testing, use `https://rc.loadout.aident.ai/mcp` as the MCP URL.
+For environment-specific testing, fetch that environment's `/SKILL.md` and use the MCP URL shown in the fetched copy.
 
 After configuring MCP, call these Loadout tools directly:
 
