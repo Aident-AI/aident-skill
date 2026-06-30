@@ -17,7 +17,7 @@ compatibility: Any agent that can run shell commands or `npx`. Direct REST API i
 x-aident-skill-id: loadout
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.3.6
+version: 0.3.7
 license: MIT
 ---
 
@@ -60,6 +60,8 @@ If the user asks to update Aident Loadout, fetch `https://aident.ai/SETUP.md` ag
 The live freshness metadata is available at `https://aident.ai/.well-known/loadout-skill.json`. If the Aident CLI or metadata endpoint reports a Loadout skill notice, follow its `updatePrompt`.
 
 If you save this skill for reuse across sessions, save its source URL and version; also save fetched time if your host tracks cache metadata. Before reusing a saved copy, compare its version with the live freshness metadata. If the remote version is newer, fetch `https://aident.ai/SETUP.md` again.
+
+Some agent hosts require the user or host to approve outbound network access for remote fetches and CLI calls. If fetching this setup document or running an `aident` command fails with DNS errors, host/network permission errors, or generic messages such as `Error: fetch failed`, ask for that network permission, then rerun the same command before changing setup modes.
 
 ## Guided Setup
 
@@ -108,13 +110,15 @@ Agent action:
   OK. Aident Loadout is not installed yet, so I'm going to install the Aident CLI now.
   ```
 
-- Then install it:
+- Then install it with the Aident-hosted installer so the setup uses the newest installer served by the current Loadout environment:
 
   ```bash
   curl -fsSL https://app.aident.ai/cli/install.sh | bash
   ```
 
-- If the installer is unavailable, use `npm install -g $AIDENT_CLI_PACKAGE` or run commands as `npx -y $AIDENT_CLI_PACKAGE ...`.
+- If a host safety policy blocks direct shell installers, install the latest published npm package with `npm install -g $AIDENT_CLI_PACKAGE@latest`.
+- If global npm installs are unavailable, run commands as `npx -y $AIDENT_CLI_PACKAGE@latest ...`.
+- If curl, npm, and npx are all unavailable, report that this host cannot install the Loadout CLI automatically.
 - If Aident CLI is already installed, send:
 
   ```text
@@ -145,7 +149,7 @@ Agent action:
   aident login
   ```
 
-If the normal browser sign-in cannot open, times out, or cannot complete the loopback flow, then run:
+Keep the normal browser sign-in running while the user is still signing in, including email verification or OAuth consent. Treat browser sign-in as complete only when the CLI returns success, the browser shows an explicit success or return-to-CLI page that you can observe, or the user says they finished sign-in. If the browser cannot open, the CLI reports a loopback or callback failure, or sign-in is complete but the CLI still does not receive the callback after about 90 seconds, then run:
 
 ```bash
 aident login --oob
@@ -154,7 +158,7 @@ aident login --oob
 Then send:
 
 ```text
-I couldn't open a browser window automatically for you, so please copy and paste this link into your browser:
+The browser sign-in did not complete in the CLI, so please copy and paste this link into your browser:
 <sign-in URL>
 
 After you sign in, please copy the final verification code shown on the page, send it here, and I'll finish setup.
@@ -245,7 +249,6 @@ When rendering this message:
 9. Preserve the completion message structure: congratulations, validated platforms, workflow examples plus missing-tool connection help, Aident-managed specialist capabilities, cross-agent reuse, dashboard link, and final CTA.
 10. Do not add a restart instruction unless host-level configuration changed and the current host requires restart or reload.
 11. Avoid generic setup phrases such as "skill-installer", "install location", "skill name", "repo-native setup", or "local skill install" for this Loadout setup flow.
-
 ## Use Loadout For
 
 Use Loadout for the full external-tool workflow. Parallelize independent `aident` commands, live action calls, and other executable steps when possible.
@@ -295,6 +298,7 @@ Stay in CLI mode while recovering. Do a short debug pass, then retry from the fa
 
 | Situation | CLI recovery | Agent response |
 | --- | --- | --- |
+| Host blocks network access. | Ask the user or host to approve outbound network access, then rerun the same fetch or `aident` command. | Say that the command needs permission to reach Aident, then continue from the same setup step. |
 | CLI unavailable or broken. | Return to Stage 2 and install or repair the Aident CLI. | Say that Loadout requires CLI access in this host. |
 | Not authenticated. | Run `aident login`, then `aident whoami`. | Ask for user action only if browser sign-in, OAuth consent, or OOB verification is required. |
 | Missing or disconnected integration. | Run `aident vault status --integrationIds <id> --json`, then `aident vault connect --integrationId <id> --json` if needed. | Send the returned connect URL to the user; do not ask for raw secrets in chat. |
