@@ -40,7 +40,7 @@ aident login    # Authenticate (opens browser)
 
 After installing the skill or MCP server, ask the agent to guide you to https://loadout.aident.ai/integrations to connect the services it should use.
 
-To refresh an existing agent setup later, ask the agent: `Update https://aident.ai/SKILL.md`.
+To refresh an existing agent setup later, ask the agent: `Update https://aident.ai/SETUP.md`.
 
 ## How It Works
 

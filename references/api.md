@@ -52,12 +52,14 @@ Operation IDs are stable and package-prefixed. Common Loadout operations:
 | `loadout_capabilities_search`           | `aident capabilities search`           |
 | `loadout_capabilities_get`              | `aident capabilities get`              |
 | `loadout_capabilities_execute`          | `aident capabilities execute`          |
-| `loadout_capabilities_integration_list` | `aident capabilities integration list` |
 | `loadout_vault_status`                  | `aident vault status`                  |
 | `loadout_vault_connect`                 | `aident vault connect`                 |
 | `loadout_vault_disconnect`              | `aident vault disconnect`              |
 | `loadout_audit_recent`                  | `aident audit recent`                  |
 | `loadout_audit_summary`                 | `aident audit summary`                 |
+
+Use `loadout_capabilities_search` with `types: ["integration"]` to discover integrations; Loadout does not expose a
+separate public integrations-list operation.
 
 ## Execute Operations
 

@@ -15,13 +15,19 @@ categories:
   - development
   - automation
 compatibility: Any agent that can run `npx` or speak MCP.
-version: 0.1.0
+x-aident-skill-id: playbook
+x-aident-source-repo: https://github.com/Aident-AI/aident-skill
+version: 0.1.1
 license: MIT
 ---
 
 # Aident Playbook - agent setup & usage guide
 
-> **You are an AI agent reading this file** because a user asked for Aident Playbook generation, execution, management, triggers, or execution history. For external-service integration work that is not Playbook-specific, use the public Loadout skill at `https://aident.ai/SKILL.md`.
+> **You are an AI agent reading this file** because a user asked for Aident Playbook generation, execution, management, triggers, or execution history. For external-service integration work that is not Playbook-specific, use the public Loadout setup document at `https://aident.ai/SETUP.md`.
+
+## Skill Updates
+
+This Playbook skill is installed from the same `aident-ai/aident-skill` distribution as the Loadout skill. If the user asks to update Aident skills, follow `Update https://aident.ai/SETUP.md`, refresh the local `aident-ai/aident-skill` distribution with the harness's skill installer, and confirm the installed Playbook `version` in this frontmatter is current.
 
 ## Quick Setup
 
