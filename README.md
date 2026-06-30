@@ -6,41 +6,21 @@
 
 Access [Aident Loadout](https://aident.ai)'s external-service integrations from any AI assistant. The recommended interface is `@aident-ai/cli`, which defaults to the Loadout package; MCP works as a fallback.
 
-## One-line install (recommended)
+## Setup And Updates
 
-**macOS / Linux:**
+Use the public setup document for first-time installation, authentication, local integration migration, and future updates:
 
-```bash
-curl -fsSL https://app.aident.ai/cli/install.sh | bash
+```text
+Follow https://aident.ai/SETUP.md
 ```
 
-**Windows (PowerShell, with Git Bash installed):**
+For an existing agent setup, ask the agent:
 
-```powershell
-& "C:\Program Files\Git\bin\bash.exe" -c 'curl -fsSL https://app.aident.ai/cli/install.sh | bash'
+```text
+Update https://aident.ai/SETUP.md
 ```
 
-The installer requires Node ≥ 18, runs `npm install -g @aident-ai/cli`, then `aident doctor` to verify.
-
-## Install the skill
-
-The CLI is most useful when paired with this skill, which gives your coding agent the focused Loadout command surface:
-
-```bash
-npx skills add aident-ai/aident-skill
-```
-
-## Post-install
-
-```bash
-aident doctor   # Validate installation
-aident setup    # Interactive setup wizard (optional)
-aident login    # Authenticate (opens browser)
-```
-
-After installing the skill or MCP server, ask the agent to guide you to https://loadout.aident.ai/integrations to connect the services it should use.
-
-To refresh an existing agent setup later, ask the agent: `Update https://aident.ai/SETUP.md`.
+This repository contains the static post-setup Loadout skill knowledge. After setup is complete, agents use this skill to operate Loadout through the CLI, user-managed MCP, or advanced OpenAPI surfaces.
 
 ## How It Works
 
@@ -122,7 +102,6 @@ See [SKILL.md](./SKILL.md) for the full instructional spec. Run `aident --help` 
 ## Links
 
 - [CLI on npm](https://www.npmjs.com/package/@aident-ai/cli)
-- [Install script](https://app.aident.ai/cli/install.sh)
 - [MCP Client Setup](references/mcp.md)
 - [OpenAPI Reference](references/api.md)
 - [Troubleshooting](references/troubleshooting.md)
