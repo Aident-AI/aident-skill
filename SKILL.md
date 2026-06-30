@@ -178,7 +178,38 @@ Agent action:
   ```
 
 - If verification fails, do a short debugging pass: check whether the CLI is installed and on the latest recommended version, whether `aident login` completed, whether the wrong account or base URL is active, and whether OOB mode is needed. Then return to Stage 3 and retry sign-in with the appropriate login mode.
-- If `whoami` returns a `userId`, render the completion message below. Do not send another generic setup-complete message before it.
+- If `whoami` returns a `userId`, continue to Stage 5 before rendering the completion message below. Do not send another generic setup-complete message before it.
+
+### Stage 5: Offer Local Integration Migration
+
+User message:
+
+```text
+I can check your local agent configuration for integrations that Loadout can manage, then help move supported ones into Loadout so future usage is tracked in one audit view and credentials are portable to future Loadout-enabled agents. Should I scan local integration configs now?
+```
+
+Agent action:
+
+- Wait for the user's answer before scanning.
+- If the user declines, continue to the completion message without scanning local config.
+- If they agree, run:
+
+  ```bash
+  aident integrations migrate-local --json
+  ```
+
+- If the command is unavailable, reports an unknown command, or the shell cannot run local commands, tell the user local migration needs an updated shell-capable Aident CLI and continue to the completion message.
+- Show the redacted plan to the user.
+- Ask whether to migrate all supported integrations or only a selected subset.
+- To migrate selected integrations, run:
+
+  ```bash
+  aident integrations migrate-local --apply --integrationIds <comma-separated-integration-ids> --json
+  ```
+
+- Do not copy local provider secrets into chat. Direct credential import requires explicit approval for the selected candidate and a supported Vault import path; otherwise use the existing Vault/OAuth connect flow.
+- Local integrations should remain configured unless the user separately asks to remove them.
+- If setup is running in a non-interactive host, shell is unavailable, or the user skips migration, continue to the completion message and guide the user to https://loadout.aident.ai/integrations for manual connections.
 
 ### Completion Message
 
