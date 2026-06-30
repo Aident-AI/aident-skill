@@ -17,7 +17,7 @@ compatibility: Any agent that can run shell commands or `npx`. Direct REST API i
 x-aident-skill-id: loadout
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.3.7
+version: 0.3.8
 license: MIT
 ---
 
@@ -116,8 +116,8 @@ Agent action:
   curl -fsSL https://app.aident.ai/cli/install.sh | bash
   ```
 
-- If a host safety policy blocks direct shell installers, install the latest published npm package with `npm install -g $AIDENT_CLI_PACKAGE@latest`.
-- If global npm installs are unavailable, run commands as `npx -y $AIDENT_CLI_PACKAGE@latest ...`.
+- If a host safety policy blocks direct shell installers, install the configured npm package with `npm install -g $AIDENT_CLI_PACKAGE`.
+- If global npm installs are unavailable, run commands as `npx -y $AIDENT_CLI_PACKAGE ...`.
 - If curl, npm, and npx are all unavailable, report that this host cannot install the Loadout CLI automatically.
 - If Aident CLI is already installed, send:
 
@@ -239,16 +239,18 @@ Do you want to connect a tool now, or tell me what you want to work on today?
 When rendering this message:
 
 1. Detect the current agent client name.
-2. If the host provides memory or recent user context, identify the user's most relevant platforms.
-3. Validate those platforms with Aident Loadout capability or integration search before naming them.
-4. Pick at most 5 validated platforms, preferably 3-5.
-5. Generate 2-3 concrete workflow examples using those validated platforms.
-6. Mention Aident-managed specialist capabilities such as Fal, Firecrawl, and Exa only after validating they are available in Loadout.
-7. If memory is unavailable or validation fails, use generic but useful examples: Gmail, Linear, Google Sheets, Slack, Exa.
-8. Do not imply a platform is connected unless Vault status confirms it. Say "can connect/use" for available integrations, and "connected" only for ready integrations.
-9. Preserve the completion message structure: congratulations, validated platforms, workflow examples plus missing-tool connection help, Aident-managed specialist capabilities, cross-agent reuse, dashboard link, and final CTA.
-10. Do not add a restart instruction unless host-level configuration changed and the current host requires restart or reload.
-11. Avoid generic setup phrases such as "skill-installer", "install location", "skill name", "repo-native setup", or "local skill install" for this Loadout setup flow.
+2. Run `aident vault status --json` first; treat integrations with `data.connectionStatus[id] === true` and `data.integrationStates[id].readiness === "ready"` as connected/ready.
+3. If the host provides memory or recent user context, identify the user's most relevant platforms and match them against Vault status before doing broader searches.
+4. Use Loadout search only for user-relevant platforms not present in Vault status.
+5. Pick at most 5 validated platforms, preferably 3-5, and prefer those ready integrations over merely available integrations.
+6. Generate 2-3 concrete workflow examples using those validated platforms.
+7. Mention Aident-managed specialist capabilities such as Fal, Firecrawl, and Exa only after validating they are available in Loadout.
+8. If memory is unavailable, validate a small generic set such as Gmail, Linear, Google Sheets, Slack, and Exa before naming them. If validation cannot run, keep the examples generic and do not say those platforms were found or connected.
+9. Do not imply a platform is connected unless Vault status confirms it. Say "can connect/use" for available integrations, and "connected" only for ready integrations.
+10. Preserve the completion message structure: congratulations, validated platforms, workflow examples plus missing-tool connection help, Aident-managed specialist capabilities, cross-agent reuse, dashboard link, and final CTA.
+11. Do not add a restart instruction unless host-level configuration changed and the current host requires restart or reload.
+12. Avoid generic setup phrases such as "skill-installer", "install location", "skill name", "repo-native setup", or "local skill install" for this Loadout setup flow.
+
 ## Use Loadout For
 
 Use Loadout for the full external-tool workflow. Parallelize independent `aident` commands, live action calls, and other executable steps when possible.
@@ -257,7 +259,7 @@ Use Loadout for the full external-tool workflow. Parallelize independent `aident
 | --- | --- | --- |
 | Search managed integrations and actions. | `aident capabilities search --query "send email" --json` | Use this before choosing a capability. |
 | Read the live action schema. | `aident capabilities get --name gmail_tools.gmail_send_email --json` | Do this before calling a new action shape. |
-| Check whether required accounts are connected in Aident Vault. | `aident vault status --integrationIds gmail_tools --json` | Say "connected" only when Vault confirms it. |
+| Check whether required accounts are connected in Aident Vault. | `aident vault status --integrationId gmail_tools --json` | Say "connected" only when Vault confirms it. |
 | Ask the user to connect missing integrations through Loadout-managed OAuth or Vault flows. | `aident vault connect --integrationId gmail_tools --json` | Send the returned connect URL to the user when connection is required. |
 | Execute connected actions such as sending email, posting Slack messages, searching the web, reading connected platform data, or calling Aident-managed remote tools. | `aident capabilities execute --name gmail_tools.gmail_send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json` | Execute only after schema and Vault checks pass. |
 | Audit recent action usage when the user asks what happened. | `aident audit recent --limit 20 --json` | Use this to confirm recent Loadout activity. |
@@ -301,7 +303,7 @@ Stay in CLI mode while recovering. Do a short debug pass, then retry from the fa
 | Host blocks network access. | Ask the user or host to approve outbound network access, then rerun the same fetch or `aident` command. | Say that the command needs permission to reach Aident, then continue from the same setup step. |
 | CLI unavailable or broken. | Return to Stage 2 and install or repair the Aident CLI. | Say that Loadout requires CLI access in this host. |
 | Not authenticated. | Run `aident login`, then `aident whoami`. | Ask for user action only if browser sign-in, OAuth consent, or OOB verification is required. |
-| Missing or disconnected integration. | Run `aident vault status --integrationIds <id> --json`, then `aident vault connect --integrationId <id> --json` if needed. | Send the returned connect URL to the user; do not ask for raw secrets in chat. |
+| Missing or disconnected integration. | Run `aident vault status --integrationId <id> --json`, then `aident vault connect --integrationId <id> --json` if needed. | Send the returned connect URL to the user; do not ask for raw secrets in chat. |
 | Schema or validation error. | Run `aident capabilities get --name <action> --json`, revise the input, and retry. | Explain the corrected input shape if the user needs to know. |
 | Forbidden or scope error. | Ask the user to reconnect or authorize the required permission through the Loadout connection flow. | Name the missing permission or platform scope when the CLI reports it. |
 | Unknown CLI error. | Inspect the command output, run relevant `aident --help` or subcommand help, and retry once with corrected arguments. | If still blocked, report the exact failing command and error summary. |
