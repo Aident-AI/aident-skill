@@ -2,12 +2,13 @@
 
 Connect your AI assistant to Aident via the Model Context Protocol.
 
-## Server URLs
+## Server URL
 
-Use the MCP URL for the package the user needs:
+Use the Aident Loadout MCP URL:
 
-- Loadout integrations: `https://loadout.aident.ai/mcp`
-- Playbook workflows: `https://app.aident.ai/playbook/mcp`
+```text
+https://loadout.aident.ai/mcp
+```
 
 For non-production deployments, replace the full server URL with that deployment's MCP URL.
 
@@ -130,7 +131,7 @@ To log out or switch accounts, use the `auth` tool with `{ "action": "logout" }`
 
 ## Verify Connection
 
-Ask your AI assistant to use an Aident tool. You should see the focused Loadout tools available. Try:
+Ask your AI assistant to use an Aident tool. You should see the focused Aident Loadout tools available. Try:
 
 ```
 Use Aident to list my available capabilities
