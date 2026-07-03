@@ -1,8 +1,18 @@
 # Aident Skill
 
-[![Skills.sh](https://img.shields.io/badge/skills.sh-aident--skill-blue)](https://skills.sh/aident-ai/aident-skill)
-[![npm](https://img.shields.io/npm/v/%40aident-ai%2Fcli?label=%40aident-ai%2Fcli)](https://www.npmjs.com/package/@aident-ai/cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/aident-ai-logo-dark.png">
+    <img src="./assets/aident-ai-logo.png" alt="Aident AI" width="300">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="https://skills.sh/aident-ai/aident-skill"><img src="https://img.shields.io/badge/skills.sh-aident--skill-blue" alt="Skills.sh"></a>
+  <a href="https://clawhub.ai/aident-ai/skills/aident-skill"><img src="https://img.shields.io/badge/ClawHub-aident--skill-111827" alt="ClawHub"></a>
+  <a href="https://www.npmjs.com/package/@aident-ai/cli"><img src="https://img.shields.io/npm/v/%40aident-ai%2Fcli?label=%40aident-ai%2Fcli" alt="@aident-ai/cli on npm"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
 
 Aident AI helps agents move beyond chat and coding to get real work done across your tools and apps.
 
@@ -35,6 +45,15 @@ npx skills add aident-ai/aident-skill
 After this command, the agent should continue with `https://aident.ai/SETUP.md` to complete Aident Loadout setup.
 
 This repository contains the static post-setup Aident Loadout skill knowledge. After setup is complete, agents use this skill to operate Aident Loadout through the CLI, user-managed MCP, or advanced OpenAPI surfaces.
+
+## Install Aident Skill from anywhere
+
+We have published Aident Skill across the following Skill, MCP, and Plugin marketplaces. You can install it from the marketplace your agent or client already supports.
+
+| Skill Marketplace | Install Link                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| Skills.sh         | [Install Aident Skill from Skills.sh](https://skills.sh/aident-ai/aident-skill)       |
+| ClawHub           | [Install Aident Skill from ClawHub](https://clawhub.ai/aident-ai/skills/aident-skill) |
 
 ## How It Works
 

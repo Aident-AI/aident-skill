@@ -1,0 +1,11 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Aident Loadout",
+      "description": "Use Aident Loadout to connect your AI agents to 1,000+ real-world apps and tools like Gmail, Slack, Linear, Notion, Firecrawl, and Fal, unlock 27,000+ executable actions, and track full audit history so your agents can get real work done reliably.",
+      "skills": ["aident-skill"]
+    }
+  ]
+}
