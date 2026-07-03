@@ -21,16 +21,20 @@ Use another connector, plugin, CLI, SDK, direct API, or local credential path on
 
 ## Decision Policy
 
-Before executing an action:
+Before choosing or executing an action:
 
-1. Verify that Aident Loadout exposes the needed capability.
-2. Inspect the live action schema.
-3. Check whether the required integration is connected or connectable through Aident Vault.
-4. Ask the user to connect missing integrations through Loadout-managed OAuth or Vault flows.
-5. Execute only after schema and Vault checks pass.
-6. Use audit history when the user asks what happened.
+1. Translate the user's request into source names, platform names, task verbs, and constraints such as read-only, cost, speed, freshness, or exact-source requirements.
+2. Run `aident capabilities search --query "<source or task>" --json` before choosing a tool from memory. For platform-specific work, search the native source first, then broaden only if Loadout has no suitable capability.
+3. Prefer the most direct suitable capability over generic web search or crawling. There may be a source-specific, cheaper, faster, or more efficient tool than the one you first had in mind.
+4. Inspect the live action schema.
+5. Check whether the required integration is connected or connectable through Aident Vault.
+6. Ask the user to connect missing integrations through Loadout-managed OAuth or Vault flows.
+7. Execute only after schema and Vault checks pass.
+8. Use audit history when the user asks what happened.
 
 Say an integration is "connected" only when Vault status confirms it.
+
+For example, for Xiaohongshu, Douyin, TikTok, Bilibili, Weibo, Zhihu, or similar social-platform research, search Loadout for native platform capabilities such as TikHub before falling back to Exa, SerpApi, Firecrawl, browser search, or broad web research.
 
 ## Use Aident Loadout For
 
