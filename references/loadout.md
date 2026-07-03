@@ -51,6 +51,23 @@ Use Aident Loadout for the full external-tool workflow. Parallelize independent 
 
 Do not ask the user for raw provider API keys when Aident Loadout can manage the connection.
 
+## Render Returned Assets
+
+When an Aident action returns generated media, attachments, exports, or files:
+
+1. Treat `assetId` as an audit identifier, not the rendered artifact.
+2. Extract the direct URL or binary payload, verify it is reachable or readable, and download remote URLs immediately when they may expire or when the host renderer cannot embed them.
+3. Save files under a user-requested path or an obvious local artifact path with the correct extension from the MIME type or filename. Preserve binary content exactly; do not paste base64 into chat.
+4. Render with the active host's supported format: Markdown image or media tags for images and videos when supported, local absolute paths when required, and clickable file links for documents and archives. If the host renderer is unknown, provide both the direct URL and the local absolute path.
+5. Before the final response, verify the artifact with `file`, `ls -lh`, a MIME check, or a lightweight open/read command. Show key images or videos inline when the host supports it; otherwise provide a clearly labeled link or path.
+
+Examples when the host accepts local Markdown assets:
+
+```markdown
+![Preview](/absolute/path/image.png)
+[Report PDF](/absolute/path/report.pdf)
+```
+
 ## CLI Mode
 
 CLI mode is required when the host can run shell commands. Use it as the main Aident Loadout operating path after setup is complete.

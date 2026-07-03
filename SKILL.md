@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.1
+version: 0.4.2
 license: MIT
 ---
 
@@ -67,6 +67,7 @@ Use the smallest relevant reference file:
 - Do not ask for raw provider API keys or secrets when Aident Vault can manage OAuth or credentials.
 - Prefer read-only discovery before mutating external tools, workflows, or third-party systems.
 - Use audit/history commands when the user asks what happened or needs proof of execution.
+- When Aident returns generated images, videos, attachments, exports, or files, verify the artifact and present it through the current host's supported renderer or a local absolute file/link. Do not return only an asset ID or a broken remote embed.
 
 ## Version Checks
 
