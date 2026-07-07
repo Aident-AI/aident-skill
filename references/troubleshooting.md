@@ -25,7 +25,7 @@ The skill needs integrations you haven't connected:
 
 ## "Connection timeout"
 
-- Check firewall allows outbound HTTPS to `app.aident.ai`
+- Check firewall allows outbound HTTPS to `loadout.aident.ai`
 - Configure proxy in MCP client if needed
 - Try disconnecting VPN temporarily
 
@@ -42,7 +42,7 @@ The agent will automatically initiate a new OOB flow on the next request.
 If using manual curl, refresh the token:
 
 ```bash
-curl -X POST ${AIDENT_BASE_URL:-https://app.aident.ai}/api/mcp/oauth/token \
+curl -X POST ${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/mcp/oauth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=refresh_token&client_id=CLIENT_ID&refresh_token=REFRESH_TOKEN"
 ```

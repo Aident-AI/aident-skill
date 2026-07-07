@@ -2,7 +2,7 @@
 # List connected Loadout Vault integrations
 # Usage: AIDENT_TOKEN=... ./vault-status.sh
 
-BASE_URL="${AIDENT_BASE_URL:-https://app.aident.ai}"
+BASE_URL="${AIDENT_BASE_URL:-https://loadout.aident.ai}"
 
 curl -s -X POST "$BASE_URL/api/openapi/loadout/loadout_vault_status" \
   -H "Content-Type: application/json" \

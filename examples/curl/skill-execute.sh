@@ -2,7 +2,7 @@
 # Execute a capability by name
 # Usage: AIDENT_TOKEN=... ./skill-execute.sh gmail_tools.gmail_send_email '{"to":"user@example.com","subject":"Hello","body":"World"}'
 
-BASE_URL="${AIDENT_BASE_URL:-https://app.aident.ai}"
+BASE_URL="${AIDENT_BASE_URL:-https://loadout.aident.ai}"
 CAPABILITY_NAME="${1:?Usage: ./skill-execute.sh <capability_name> <input_json>}"
 INPUT_JSON="${2:?Usage: ./skill-execute.sh <capability_name> <input_json>}"
 

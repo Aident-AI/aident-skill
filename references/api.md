@@ -5,9 +5,9 @@ Use the OpenAPI surface when an agent host needs raw HTTPS instead of the CLI or
 ## Base URLs
 
 ```text
-https://app.aident.ai/api/openapi/loadout.json
-https://app.aident.ai/api/openapi/loadout/operations
-https://app.aident.ai/api/openapi/loadout/{operationId}
+https://loadout.aident.ai/api/openapi/loadout.json
+https://loadout.aident.ai/api/openapi/loadout/operations
+https://loadout.aident.ai/api/openapi/loadout/{operationId}
 ```
 
 Use `AIDENT_BASE_URL` to target another Aident deployment:
@@ -35,14 +35,14 @@ Fetch the Loadout OpenAPI document:
 
 ```bash
 curl -H "Authorization: Bearer $AIDENT_TOKEN" \
-  "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout.json"
+  "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout.json"
 ```
 
 Fetch compact operation metadata:
 
 ```bash
 curl -H "Authorization: Bearer $AIDENT_TOKEN" \
-  "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/operations"
+  "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/operations"
 ```
 
 Operation IDs are stable and package-prefixed. Common Loadout operations:
@@ -66,7 +66,7 @@ separate public integrations-list operation.
 POST the command arguments directly to the operation URL.
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_capabilities_search" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_capabilities_search" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "query": "send email", "limit": 5 }'
@@ -75,7 +75,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/load
 Execute a capability:
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_capabilities_execute" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_capabilities_execute" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{
@@ -87,7 +87,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/load
 Check Vault connection status:
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_vault_status" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_vault_status" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{}'
@@ -96,7 +96,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/load
 Audit recent Loadout action calls:
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/loadout_audit_summary" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_audit_summary" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{ "limit": 50 }'
@@ -118,7 +118,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://app.aident.ai}/api/openapi/loadout/load
 | Variable          | Purpose                                                  |
 | ----------------- | -------------------------------------------------------- |
 | `AIDENT_TOKEN`    | Skip credential file and use this Bearer token directly. |
-| `AIDENT_BASE_URL` | Override the default server (`https://app.aident.ai`).   |
+| `AIDENT_BASE_URL` | Override the default server (`https://loadout.aident.ai`). |
 
 ## Rate Limits
 
