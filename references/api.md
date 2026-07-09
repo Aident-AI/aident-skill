@@ -47,16 +47,16 @@ curl -H "Authorization: Bearer $AIDENT_TOKEN" \
 
 Operation IDs are stable and package-prefixed. Common Loadout operations:
 
-| Operation ID                            | CLI equivalent                         |
-| --------------------------------------- | -------------------------------------- |
-| `loadout_capabilities_search`           | `aident capabilities search`           |
-| `loadout_capabilities_get`              | `aident capabilities get`              |
-| `loadout_capabilities_execute`          | `aident capabilities execute`          |
-| `loadout_vault_status`                  | `aident vault status`                  |
-| `loadout_vault_connect`                 | `aident vault connect`                 |
-| `loadout_vault_disconnect`              | `aident vault disconnect`              |
-| `loadout_audit_recent`                  | `aident audit recent`                  |
-| `loadout_audit_summary`                 | `aident audit summary`                 |
+| Operation ID                   | CLI equivalent                |
+| ------------------------------ | ----------------------------- |
+| `loadout_capabilities_search`  | `aident capabilities search`  |
+| `loadout_capabilities_get`     | `aident capabilities get`     |
+| `loadout_capabilities_execute` | `aident capabilities execute` |
+| `loadout_vault_status`         | `aident vault status`         |
+| `loadout_vault_connect`        | `aident vault connect`        |
+| `loadout_vault_disconnect`     | `aident vault disconnect`     |
+| `loadout_audit_recent`         | `aident audit recent`         |
+| `loadout_audit_summary`        | `aident audit summary`        |
 
 Use `loadout_capabilities_search` with `types: ["integration"]` to discover integrations; Loadout does not expose a
 separate public integrations-list operation.
@@ -79,7 +79,7 @@ curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
   -d '{
-    "name": "gmail_tools.gmail_send_email",
+    "name": "composio:gmail_tools:gmail_send_email",
     "input": { "to": "team@example.com", "subject": "Notes", "body": "..." }
   }'
 ```
@@ -115,9 +115,9 @@ curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/
 
 ## Advanced Overrides
 
-| Variable          | Purpose                                                  |
-| ----------------- | -------------------------------------------------------- |
-| `AIDENT_TOKEN`    | Skip credential file and use this Bearer token directly. |
+| Variable          | Purpose                                                    |
+| ----------------- | ---------------------------------------------------------- |
+| `AIDENT_TOKEN`    | Skip credential file and use this Bearer token directly.   |
 | `AIDENT_BASE_URL` | Override the default server (`https://loadout.aident.ai`). |
 
 ## Rate Limits
