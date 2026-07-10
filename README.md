@@ -57,14 +57,14 @@ We have published Aident Skill across the following Skill, MCP, and Plugin marke
 
 ## How It Works
 
-The root [SKILL.md](./SKILL.md) is intentionally small. It teaches the agent when to use Aident Loadout, then points to focused references:
+The installable [SKILL.md](./skills/aident-skill/SKILL.md) is intentionally small. It teaches the agent when to use Aident Loadout, then points to focused references packaged with the skill:
 
-| Need                                                                     | Reference                                                        |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| External tools, SaaS apps, integrations, Vault, execution, audit history | [references/loadout.md](./references/loadout.md)                 |
-| MCP client setup                                                         | [references/mcp.md](./references/mcp.md)                         |
-| Raw HTTPS/OpenAPI fallback                                               | [references/api.md](./references/api.md)                         |
-| Authentication and troubleshooting                                       | [references/troubleshooting.md](./references/troubleshooting.md) |
+| Need                                                                     | Reference                                                                            |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| External tools, SaaS apps, integrations, Vault, execution, audit history | [references/loadout.md](./skills/aident-skill/references/loadout.md)                 |
+| MCP client setup                                                         | [references/mcp.md](./skills/aident-skill/references/mcp.md)                         |
+| Raw HTTPS/OpenAPI fallback                                               | [references/api.md](./skills/aident-skill/references/api.md)                         |
+| Authentication and troubleshooting                                       | [references/troubleshooting.md](./skills/aident-skill/references/troubleshooting.md) |
 
 ### CLI
 
@@ -84,7 +84,7 @@ MCP is available when the user configures it:
 
 - Aident Loadout integrations: `https://loadout.aident.ai/mcp`
 
-See [references/mcp.md](./references/mcp.md) for client-specific setup.
+See [references/mcp.md](./skills/aident-skill/references/mcp.md) for client-specific setup.
 
 ## Authentication
 
