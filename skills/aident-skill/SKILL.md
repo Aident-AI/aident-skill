@@ -19,13 +19,13 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.5
+version: 0.4.6
 license: MIT
 ---
 
 # Aident For Agents
 
-This is the only public installable Aident skill in `Aident-AI/aident-skill`.
+This is the primary public Aident router in `Aident-AI/aident-skill`.
 The current public operating surface is Aident Loadout.
 
 ## Setup And Updates
@@ -50,12 +50,13 @@ npx skills add aident-ai/aident-skill
 
 Use the smallest relevant reference file:
 
-| User intent                                                                                                                                                                   | Reference                       |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| External apps, SaaS platforms, APIs, account integrations, Vault, action execution, audit history, Firecrawl, Exa, Fal, Gmail, Slack, Linear, Google Sheets, Notion, HubSpot. | `references/loadout.md`         |
-| User asks how to configure Aident MCP in Claude Code, Cursor, Codex, Windsurf, VS Code, ChatGPT, Gemini CLI, or another MCP client.                                           | `references/mcp.md`             |
-| Host cannot use the CLI and needs raw HTTPS/OpenAPI operations.                                                                                                               | `references/api.md`             |
-| Authentication, missing integrations, unavailable tools, connection timeouts, or credential-file problems.                                                                    | `references/troubleshooting.md` |
+| User intent                                                                                                                                                                   | Reference                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| External apps, SaaS platforms, APIs, account integrations, Vault, action execution, audit history, Firecrawl, Exa, Fal, Gmail, Slack, Linear, Google Sheets, Notion, HubSpot. | `references/loadout.md`              |
+| User asks how to configure Aident MCP in Claude Code, Cursor, Codex, Windsurf, VS Code, ChatGPT, Gemini CLI, or another MCP client.                                           | `references/mcp.md`                  |
+| Host cannot use the CLI and needs raw HTTPS/OpenAPI operations.                                                                                                               | `references/api.md`                  |
+| Authentication, missing integrations, unavailable tools, connection timeouts, or credential-file problems.                                                                    | `references/troubleshooting.md`      |
+| User asks to report a Loadout product problem from the current trace.                                                                                                         | `Report A Loadout Bug` section below |
 
 ## Operating Rules
 
@@ -70,6 +71,19 @@ Use the smallest relevant reference file:
 - If `aident` command output includes a skill update warning, finish the current task first, then surface the warning and offer to run `Update https://aident.ai/SETUP.md`. If the user declines, do not raise it again in the same session.
 - When Aident returns generated images, videos, attachments, exports, or files, verify the artifact and present it through the current host's supported renderer or a local absolute file/link. Do not return only an asset ID or a broken remote embed.
 
+## Report A Loadout Bug
+
+When the user asks to report a Loadout problem from the current trace:
+
+1. Gather only relevant evidence already available in the conversation, command results, logs, or files the user supplied. If the trace contains no concrete failure, ask the user what went wrong instead of inventing a report.
+2. Remove tokens, cookies, OAuth or verification codes, credentials, personal data, and unrelated payloads. Replace sensitive values with labels such as `[token]`, `[email]`, or `[redacted]`.
+3. Run `aident loadout bug submit --help` and write a Markdown report following the report structure it describes. Do not claim a command, result, or cause that the trace does not support.
+4. Show the exact report to the user. Asking to report the bug is authorization to submit this redacted report, so do not require another confirmation.
+5. Save the report to a temporary Markdown file, then submit it with `aident loadout bug submit --report-file <path> --surface <agent-name>`.
+6. Treat `success: true` with `data.recorded: true` as confirmation. If the server rejects the report, fix it using the error message and the structure in `error.data.expectedReport`, then resubmit once. Report a submission failure accurately; never write directly to Aident's database as a fallback.
+
+If the CLI is missing or authentication has expired, follow `https://aident.ai/SETUP.md`, then retry the submission once.
+
 ## Version Checks
 
 If the user asks whether this installed skill is current:
@@ -78,7 +92,7 @@ If the user asks whether this installed skill is current:
 2. Fetch `https://aident.ai/.well-known/loadout-skill.json`.
 3. Compare the installed `version` with the remote `skillVersion`.
 4. If the remote version is newer, refresh with `npx skills add aident-ai/aident-skill` or follow `https://aident.ai/SETUP.md`.
-5. Re-read the installed frontmatter and confirm the installed version.
+5. Re-read the installed frontmatter and confirm the installed version now matches.
 
 ## Support
 
