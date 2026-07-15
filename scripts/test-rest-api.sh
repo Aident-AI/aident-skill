@@ -174,15 +174,15 @@ AUTH_BODY=$(echo "$AUTH_RESPONSE" | sed '$d')
 
 assert_status "Fetch operations" 200 "$AUTH_STATUS"
 assert_json_field "operations response" "$AUTH_BODY" "commands"
-assert_json_value "Has Loadout vault status operation" "$AUTH_BODY" "any(c.get('operationId') == 'loadout_vault_status' for c in d['commands'])"
+assert_json_value "Has Loadout vault operation" "$AUTH_BODY" "any(c.get('operationId') == 'loadout_vault' for c in d['commands'])"
 echo ""
 
 # Test 3c: POST operation -- call vault status
-bold "  3c. POST /api/openapi/loadout/loadout_vault_status -- call vault status"
-VAULT_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_vault_status" \
+bold "  3c. POST /api/openapi/loadout/loadout_vault -- call vault status"
+VAULT_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$OPENAPI_EXEC_PATH/loadout_vault" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{}')
+  -d '{"action":"status"}')
 VAULT_STATUS=$(echo "$VAULT_RESPONSE" | tail -1)
 VAULT_BODY=$(echo "$VAULT_RESPONSE" | sed '$d')
 

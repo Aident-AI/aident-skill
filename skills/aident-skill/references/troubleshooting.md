@@ -12,8 +12,8 @@ If the OAuth flow doesn't start automatically:
 
 The skill needs integrations you haven't connected:
 
-1. Run `vault_status` with the relevant `integrationIds` or `capabilityNames`
-2. Run `vault_connect` with `{ "integrationId": "<id>" }` for the missing integration
+1. Run `vault` with `action: "status"` and the relevant `integrationIds` or `capabilityNames`
+2. Run `vault` with `{ "action": "connect", "integrationId": "<id>" }` for the missing integration
 3. Authorize in browser when prompted
 4. Retry the operation
 

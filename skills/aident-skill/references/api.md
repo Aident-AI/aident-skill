@@ -47,16 +47,13 @@ curl -H "Authorization: Bearer $AIDENT_TOKEN" \
 
 Operation IDs are stable and package-prefixed. Common Loadout operations:
 
-| Operation ID                   | CLI equivalent                |
-| ------------------------------ | ----------------------------- |
-| `loadout_capabilities_search`  | `aident capabilities search`  |
-| `loadout_capabilities_get`     | `aident capabilities get`     |
-| `loadout_capabilities_execute` | `aident capabilities execute` |
-| `loadout_vault_status`         | `aident vault status`         |
-| `loadout_vault_connect`        | `aident vault connect`        |
-| `loadout_vault_disconnect`     | `aident vault disconnect`     |
-| `loadout_audit_recent`         | `aident audit recent`         |
-| `loadout_audit_summary`        | `aident audit summary`        |
+| Operation ID                   | CLI equivalent                               |
+| ------------------------------ | -------------------------------------------- |
+| `loadout_capabilities_search`  | `aident capabilities search`                 |
+| `loadout_capabilities_get`     | `aident capabilities get`                    |
+| `loadout_capabilities_execute` | `aident capabilities execute`                |
+| `loadout_vault`                | `aident vault status / connect / disconnect` |
+| `loadout_audit`                | `aident audit recent / summary`              |
 
 Use `loadout_capabilities_search` with `types: ["integration"]` to discover integrations; Loadout does not expose a
 separate public integrations-list operation.
@@ -87,19 +84,19 @@ curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/
 Check Vault connection status:
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_vault_status" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_vault" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{}'
+  -d '{ "action": "status" }'
 ```
 
 Audit recent Loadout action calls:
 
 ```bash
-curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_audit_summary" \
+curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/loadout_audit" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AIDENT_TOKEN" \
-  -d '{ "limit": 50 }'
+  -d '{ "action": "summary", "limit": 50 }'
 ```
 
 ## Error Handling

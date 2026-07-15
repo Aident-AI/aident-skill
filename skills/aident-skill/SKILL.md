@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.7
+version: 0.4.8
 license: MIT
 ---
 
