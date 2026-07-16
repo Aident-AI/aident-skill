@@ -102,14 +102,15 @@ Use either CLI auth or user-managed MCP auth in one setup attempt, not both. Aft
 
 Stay in CLI mode while recovering. Do a short debug pass, then retry from the failed workflow step.
 
-| Situation                            | CLI recovery                                                                                                              | Agent response                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| CLI unavailable or broken.           | Fetch and follow `https://aident.ai/SETUP.md` to install or repair the Aident CLI, then rerun `aident doctor`.            | Say that Aident Loadout requires working CLI access in this host before retrying.            |
-| Not authenticated.                   | Run `aident login`, then `aident whoami`.                                                                                 | Ask for user action only if browser sign-in, OAuth consent, or OOB verification is required. |
-| Missing or disconnected integration. | Run `aident vault status --integrationId <id> --json`, then `aident vault connect --integrationId <id> --json` if needed. | Send the returned connect URL to the user; do not ask for raw secrets in chat.               |
-| Schema or validation error.          | Run `aident capabilities get --name <action> --json`, revise the input, and retry.                                        | Explain the corrected input shape if the user needs to know.                                 |
-| Forbidden or scope error.            | Ask the user to reconnect or authorize the required permission through the Aident Loadout connection flow.                | Name the missing permission or platform scope when the CLI reports it.                       |
-| Unknown CLI error.                   | Inspect the command output, run relevant `aident --help` or subcommand help, and retry once with corrected arguments.     | If still blocked, report the exact failing command and error summary.                        |
+| Situation                            | CLI recovery                                                                                                              | Agent response                                                                                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI unavailable or broken.           | Fetch and follow `https://aident.ai/SETUP.md` to install or repair the Aident CLI, then rerun `aident doctor`.            | Say that Aident Loadout requires working CLI access in this host before retrying.                                                                              |
+| Not authenticated.                   | Run `aident login`, then `aident whoami`.                                                                                 | Ask for user action only if browser sign-in, OAuth consent, or OOB verification is required.                                                                   |
+| Missing or disconnected integration. | Run `aident vault status --integrationId <id> --json`, then `aident vault connect --integrationId <id> --json` if needed. | Send the returned connect URL to the user; do not ask for raw secrets in chat.                                                                                 |
+| `insufficient-credits`.              | Do not retry or run a separate balance preflight.                                                                         | Relay that Loadout credits are insufficient for the action and provide the returned `error.data.billingUrl`, or `https://loadout.aident.ai/billing` if absent. |
+| Schema or validation error.          | Run `aident capabilities get --name <action> --json`, revise the input, and retry.                                        | Explain the corrected input shape if the user needs to know.                                                                                                   |
+| Forbidden or scope error.            | Ask the user to reconnect or authorize the required permission through the Aident Loadout connection flow.                | Name the missing permission or platform scope when the CLI reports it.                                                                                         |
+| Unknown CLI error.                   | Inspect the command output, run relevant `aident --help` or subcommand help, and retry once with corrected arguments.     | If still blocked, report the exact failing command and error summary.                                                                                          |
 
 ## Safety
 
@@ -125,6 +126,7 @@ Stay in CLI mode while recovering. Do a short debug pass, then retry from the fa
 Use these links when the user wants to manage Aident Loadout outside the agent or needs product help.
 
 - Aident Loadout Dashboard: https://loadout.aident.ai/home
+- Aident Loadout Billing: https://loadout.aident.ai/billing
 - Aident Loadout Integrations: https://loadout.aident.ai/integrations
 - Docs: https://docs.aident.ai
 - Help: help@aident.ai

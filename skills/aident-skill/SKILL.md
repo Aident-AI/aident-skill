@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.8
+version: 0.4.9
 license: MIT
 ---
 
@@ -68,6 +68,7 @@ Use the smallest relevant reference file:
 - Do not ask for raw provider API keys or secrets when Aident Vault can manage OAuth or credentials.
 - Prefer read-only discovery before mutating external tools, workflows, or third-party systems.
 - Use audit/history commands when the user asks what happened or needs proof of execution.
+- If an execution returns `insufficient-credits`, stop without retrying or running a separate balance preflight. Relay that Loadout credits are insufficient for the action and provide the returned `error.data.billingUrl`, falling back to `https://loadout.aident.ai/billing` only if it is missing.
 - If `aident` command output includes a skill update warning, finish the current task first, then surface the warning and offer to run `Update https://aident.ai/SETUP.md`. If the user declines, do not raise it again in the same session.
 - When Aident returns generated images, videos, attachments, exports, or files, verify the artifact and present it through the current host's supported renderer or a local absolute file/link. Do not return only an asset ID or a broken remote embed.
 
@@ -98,6 +99,7 @@ If the user asks whether this installed skill is current:
 
 - Aident: https://aident.ai
 - Aident Loadout Dashboard: https://loadout.aident.ai/home
+- Aident Loadout Billing: https://loadout.aident.ai/billing
 - Aident Loadout Integrations: https://loadout.aident.ai/integrations
 - Docs: https://docs.aident.ai
 - Help: help@aident.ai
