@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.9
+version: 0.4.10
 license: MIT
 ---
 
@@ -36,15 +36,17 @@ If the user asks to set up, install, migrate, or update Aident for an agent envi
 https://aident.ai/SETUP.md
 ```
 
-If this skill was just installed with `npx skills add aident-ai/aident-skill`, do not treat that command as complete Aident Loadout setup. Immediately fetch and follow `https://aident.ai/SETUP.md` to complete Aident Loadout setup.
+If this skill was just installed with `npx -y skills add aident-ai/aident-skill --skill aident-skill --agent '*' --global --yes`, do not treat that command as complete Aident Loadout setup. Immediately fetch and follow `https://aident.ai/SETUP.md` to complete Aident Loadout setup.
 
 Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user explicitly asks to author a local skill.
 
 The skills.sh install command for this package is:
 
 ```bash
-npx skills add aident-ai/aident-skill
+npx -y skills add aident-ai/aident-skill --skill aident-skill --agent '*' --global --yes
 ```
+
+`--agent '*'` targets every coding agent supported by the skills CLI, while `--global` keeps the skill available outside the current project. Account-level skill surfaces such as Claude Cowork or Claude chat still require their native skill manager.
 
 ## Route The Task
 
@@ -92,7 +94,7 @@ If the user asks whether this installed skill is current:
 1. Read the installed `SKILL.md` frontmatter.
 2. Fetch `https://aident.ai/.well-known/loadout-skill.json`.
 3. Compare the installed `version` with the remote `skillVersion`.
-4. If the remote version is newer, refresh with `npx skills add aident-ai/aident-skill` or follow `https://aident.ai/SETUP.md`.
+4. If the remote version is newer, follow `https://aident.ai/SETUP.md` to refresh every installed scope.
 5. Re-read the installed frontmatter and confirm the installed version now matches.
 
 ## Support
