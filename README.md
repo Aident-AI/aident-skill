@@ -39,10 +39,13 @@ Update https://aident.ai/SETUP.md
 If you only need to install the static skill package manually:
 
 ```bash
-npx -y skills add aident-ai/aident-skill --skill aident-skill --agent '*' --global --yes
+npx -y @aident-ai/cli@latest update --skill-only
 ```
 
-The quoted `'*'` targets every coding agent supported by the skills CLI, and the global install keeps the skill available outside the current project. Account-level skill surfaces such as Claude Cowork or Claude chat still require their native skill manager. After this command, the agent should continue with `https://aident.ai/SETUP.md` to complete Aident Loadout setup.
+The CLI verifies the published artifact, installs one canonical global copy, and repairs detected filesystem-backed
+agent hosts. Add `--project` only when you want clean project-scoped copies migrated too. Account-level skill surfaces
+such as Claude Cowork or Claude chat still require their native skill manager. After this command, continue with
+`https://aident.ai/SETUP.md` to complete Aident Loadout setup.
 
 This repository contains the static post-setup Aident Loadout skill knowledge. After setup is complete, agents use this skill to operate Aident Loadout through the CLI, user-managed MCP, or advanced OpenAPI surfaces.
 

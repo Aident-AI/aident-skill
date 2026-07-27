@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.11
+version: 0.4.10
 license: MIT
 ---
 
@@ -36,18 +36,17 @@ If the user asks to set up, install, migrate, or update Aident for an agent envi
 https://aident.ai/SETUP.md
 ```
 
+If this skill was just installed with `npx -y skills add aident-ai/aident-skill --skill aident-skill --agent '*' --global --yes`, do not treat that command as complete Aident Loadout setup. Immediately fetch and follow `https://aident.ai/SETUP.md` to complete Aident Loadout setup.
+
 Do not create, edit, scaffold, validate, or inspect a local `SKILL.md` file unless the user explicitly asks to author a local skill.
 
-After the Aident CLI is installed, use its verified updater:
+The skills.sh install command for this package is:
 
 ```bash
-aident update
+npx -y skills add aident-ai/aident-skill --skill aident-skill --agent '*' --global --yes
 ```
 
-The updater installs one canonical global copy, repairs detected filesystem-backed agent hosts, and reports project
-copies that may shadow it. Use `aident update --project` only when the user explicitly wants clean project copies
-migrated too. Account-level skill surfaces such as Claude Cowork or Claude chat still require their native skill
-manager.
+`--agent '*'` targets every coding agent supported by the skills CLI, while `--global` keeps the skill available outside the current project. Account-level skill surfaces such as Claude Cowork or Claude chat still require their native skill manager.
 
 ## Route The Task
 
@@ -73,7 +72,7 @@ Use the smallest relevant reference file:
 - Prefer read-only discovery before mutating external tools, workflows, or third-party systems.
 - Use audit/history commands when the user asks what happened or needs proof of execution.
 - If an execution returns `insufficient-credits`, stop without retrying or running a separate balance preflight. Relay that Loadout credits are insufficient for the action and provide the returned `error.data.billingUrl`, falling back to `https://loadout.aident.ai/billing` only if it is missing.
-- If `aident` command output includes an update warning, finish the current task first, then surface the warning and offer to run `aident update`. Never update from a recommendation without the user's explicit request.
+- If `aident` command output includes a skill update warning, finish the current task first, then surface the warning and offer to run `Update https://aident.ai/SETUP.md`. If the user declines, do not raise it again in the same session.
 - When Aident returns generated images, videos, attachments, exports, or files, verify the artifact and present it through the current host's supported renderer or a local absolute file/link. Do not return only an asset ID or a broken remote embed.
 
 ## Report A Loadout Bug
@@ -93,10 +92,11 @@ If the CLI is missing or authentication has expired, follow `https://aident.ai/S
 
 If the user asks whether this installed skill is current:
 
-1. Run `aident update --check`.
-2. Explain the CLI and skill status it reports.
-3. Run `aident update` only if the user asks to apply the update.
-4. If the installed CLI does not recognize `aident update`, follow `https://aident.ai/SETUP.md` once to migrate it.
+1. Read the installed `SKILL.md` frontmatter.
+2. Fetch `https://aident.ai/.well-known/loadout-skill.json`.
+3. Compare the installed `version` with the remote `skillVersion`.
+4. If the remote version is newer, follow `https://aident.ai/SETUP.md` to refresh every installed scope.
+5. Re-read the installed frontmatter and confirm the installed version now matches.
 
 ## Support
 
