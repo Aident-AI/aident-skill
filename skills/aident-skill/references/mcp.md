@@ -12,6 +12,8 @@ https://loadout.aident.ai/mcp
 
 For non-production deployments, replace the full server URL with that deployment's MCP URL.
 
+For interactive, always-current setup instructions with videos for each client, visit https://loadout.aident.ai/home and open the card for your client.
+
 ## Client Configuration
 
 ### Claude Code
@@ -50,7 +52,14 @@ Add to your config file (`~/Library/Application Support/Claude/claude_desktop_co
 }
 ```
 
-Or on **Pro/Max/Team/Enterprise** plans: **Settings → Connectors → Add** and enter `https://loadout.aident.ai/mcp`.
+### Claude on the web (claude.ai), Claude Desktop connectors, and Claude Cowork
+
+On **Pro/Max/Team/Enterprise** plans, add Aident as an account-level connector so it is available across claude.ai, Claude Desktop, and Claude Cowork:
+
+1. Open **Settings → Connectors** (on claude.ai or in the desktop app).
+2. Click **Add custom connector**.
+3. Enter the name `Aident Loadout` and the server URL `https://loadout.aident.ai/mcp`, then save.
+4. Complete the OAuth sign-in when prompted and enable the connector in your chat's tools menu.
 
 ### Cursor IDE
 
@@ -95,13 +104,17 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### ChatGPT Desktop
+### ChatGPT (web and desktop)
 
-Go to Settings → MCP Servers → Add Server, then enter:
+ChatGPT connects to Aident as a Developer Mode plugin (a custom MCP connection). Requires a Pro, Plus, Business, Enterprise, or Edu plan; on Business/Enterprise/Edu workspaces an admin may need to allow custom connections.
 
-```
-https://loadout.aident.ai/mcp
-```
+1. In ChatGPT, open **Settings → Security and login** and enable **Developer mode**.
+2. Go to **chatgpt.com/plugins** and click the add (**+**) button.
+3. Enter the name `Aident Loadout`, an optional description, and the server URL `https://loadout.aident.ai/mcp`, then create the connection.
+4. Sign in through the OAuth window and click **Approve**.
+5. In a new chat, mention `@Aident Loadout` or simply ask for Aident tools.
+
+After Aident ships tool updates, open chatgpt.com/plugins and click **Refresh** on the connection; new conversations then use the updated tools.
 
 ### Gemini CLI
 
