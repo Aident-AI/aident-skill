@@ -67,6 +67,19 @@ Use Aident Loadout for the full external-tool workflow. Parallelize independent 
 
 Do not ask the user for raw provider API keys when Aident Loadout can manage the connection.
 
+## Multi-Account Connections
+
+Multi-account connections are a Pro feature. Pay-as-you-go users are limited to one connected account per integration and use that integration's default account. Do not offer `--addAccount`, account switching, or explicit alias routing unless Vault or capability output confirms that multi-account fields are available.
+
+Eligible Pro users can hold several accounts per integration. Vault and capability output then include default-first `userAccounts` summaries with `alias`, `isDefault`, and `status` fields.
+
+- Run `aident vault connect --integrationId <id> --addAccount --json` to add another account instead of reconnecting the existing one.
+- Run `aident vault connect --integrationId <id> --accountAlias <alias> --replaceAccountConfirmed --json` to reconnect one exact account. Reconnect may replace the provider identity behind the alias, so pass `--replaceAccountConfirmed` only after the user confirms.
+- Run `aident vault disconnect --integrationId <id> --accountAlias <alias> --json` to delete one exact account. The alias is required when multiple accounts exist; omitting it returns `account-selection-required` with `userAccounts` and `defaultUserAccount` instead of deleting anything.
+- `aident vault status` returns account groups for enabled users, and `aident capabilities get` returns `userAccounts` for Actions. Read them to learn which aliases exist and which account is the default.
+- Before a side-effecting `aident capabilities execute` when the Action's integration has more than one active account, surface the default alias, obtain the user's alias choice or confirmation of that default, and pass it with `--accountAlias <alias>`. Omitting it returns `account-selection-required` before the provider is called.
+- Execute results include `usedUserAccount` so you can report which account performed the action.
+
 ## Render Returned Assets
 
 When an Aident action returns generated media, attachments, exports, or files:

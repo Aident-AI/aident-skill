@@ -99,6 +99,16 @@ curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/
   -d '{ "action": "summary", "limit": 50 }'
 ```
 
+## Multi-Account Fields
+
+Multi-account connections are a Pro feature. Pay-as-you-go users are limited to one connected account per integration and use that integration's default account. Only offer account selection when Vault or capability output confirms that multi-account fields are available.
+
+For eligible Pro users:
+
+- `loadout_capabilities_execute` accepts an optional top-level `accountAlias` field beside `name` and `input` to pin an Action to one connected account. When a side-effecting Action's integration has more than one active account, omitting it returns `account-selection-required` with the default-first account list.
+- Successful Action execution results include `usedUserAccount`, the summary of the account that performed the Action.
+- `loadout_vault` connect accepts `addAccount` or `accountAlias` with `replaceAccountConfirmed`; disconnect requires `accountAlias` when multiple accounts exist.
+
 ## Error Handling
 
 | HTTP Status | Meaning                                                              |
