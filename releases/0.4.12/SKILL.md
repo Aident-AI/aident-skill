@@ -19,7 +19,7 @@ compatibility: Any agent that can read skill references and run shell commands o
 x-aident-skill-id: aident
 x-aident-update-metadata: https://aident.ai/.well-known/loadout-skill.json
 x-aident-source-repo: https://github.com/Aident-AI/aident-skill
-version: 0.4.13
+version: 0.4.12
 license: MIT
 ---
 
@@ -67,6 +67,7 @@ Use the smallest relevant reference file:
 - Prefer the Aident CLI when the host can run shell commands. Use MCP only when the user configured it or the CLI cannot run.
 - Start from live CLI help, schemas, and Vault status before assuming command names, arguments, or connection state.
 - Search Aident Loadout capabilities before choosing a tool from memory; there may be a source-specific, cheaper, faster, or more efficient integration available for the task.
+- Search Aident Loadout Skills separately when curated guidance would help. Search returns snippets only; select with `skills read`, keep exact revisions pinned, pass the returned traversal state, and stop at Loadout's traversal bounds.
 - Say an integration is "connected" only when Vault status confirms it. If an integration is available but not connected, ask the user to connect it through Aident.
 - Do not ask for raw provider API keys or secrets when Aident Vault can manage OAuth or credentials.
 - Prefer read-only discovery before mutating external tools, workflows, or third-party systems.
