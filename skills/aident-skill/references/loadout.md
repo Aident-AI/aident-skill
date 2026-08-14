@@ -61,7 +61,7 @@ Use Aident Loadout for the full external-tool workflow. Parallelize independent 
 | Check whether required accounts are connected in Aident Vault.                                                                                                       | `aident vault status --integrationId composio:gmail_tools --json`                                                                                 | Say "connected" only when Vault confirms it.                           |
 | Ask the user to connect missing integrations through Aident Loadout-managed OAuth or Vault flows.                                                                    | `aident vault connect --integrationId composio:gmail_tools --json`                                                                                | Send the returned connect URL to the user when connection is required. |
 | Execute connected actions such as sending email, posting Slack messages, searching the web, reading connected platform data, or calling Aident-managed remote tools. | `aident capabilities execute --name composio:gmail_tools:gmail_send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json` | Execute only after schema and Vault checks pass.                       |
-| Audit recent action usage when the user asks what happened.                                                                                                          | `aident audit recent --limit 20 --json`                                                                                                           | Use this to confirm recent Aident Loadout activity.                    |
+| Audit recent action usage when the user asks what happened or an action response was interrupted.                                                                    | `aident audit recent --limit 20 --json`                                                                                                           | Use `resultFiles[].downloadUrl` to recover persisted files.            |
 
 Do not ask the user for raw provider API keys when Aident Loadout can manage the connection.
 
@@ -136,6 +136,7 @@ Stay in CLI mode while recovering. Do a short debug pass, then retry from the fa
 | `insufficient-credits`.              | Do not retry or run a separate balance preflight.                                                                         | Relay that Loadout credits are insufficient for the action and provide the returned `error.data.billingUrl`, or `https://loadout.aident.ai/billing` if absent. |
 | Schema or validation error.          | Run `aident capabilities get --name <action> --json`, revise the input, and retry.                                        | Explain the corrected input shape if the user needs to know.                                                                                                   |
 | Forbidden or scope error.            | Ask the user to reconnect or authorize the required permission through the Aident Loadout connection flow.                | Name the missing permission or platform scope when the CLI reports it.                                                                                         |
+| Successful action response missing.  | Run `aident audit recent --limit 20 --json` and match the request ID.                                                     | Download and verify each returned `resultFiles[].downloadUrl`. Do not rerun a billable action when its result is recoverable.                                  |
 | Unknown CLI error.                   | Inspect the command output, run relevant `aident --help` or subcommand help, and retry once with corrected arguments.     | If still blocked, report the exact failing command and error summary.                                                                                          |
 
 ## Safety
@@ -146,6 +147,7 @@ Stay in CLI mode while recovering. Do a short debug pass, then retry from the fa
 - Prefer read-only discovery before mutating external tools and platforms.
 - Confirm Vault connection status before saying an integration is connected.
 - Use `aident audit recent --limit 20 --json` when the user asks what the agent did through Aident Loadout.
+- Treat the request ID as the recovery handle. Use returned result-file URLs and never ask for or expose internal asset IDs.
 
 ## Support
 

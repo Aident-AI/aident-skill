@@ -99,6 +99,10 @@ curl -X POST "${AIDENT_BASE_URL:-https://loadout.aident.ai}/api/openapi/loadout/
   -d '{ "action": "summary", "limit": 50 }'
 ```
 
+Successful audit entries can include `resultFiles` with `type`, `downloadUrl`, and nullable `expiresAt`. Use those
+download URLs to recover persisted files when an action response was interrupted. Asset IDs and raw provider output are
+not part of the public audit response.
+
 ## Multi-Account Fields
 
 Multi-account connections are a Pro feature. Pay-as-you-go users are limited to one connected account per integration and use that integration's default account. Only offer account selection when Vault or capability output confirms that multi-account fields are available.
