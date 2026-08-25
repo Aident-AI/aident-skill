@@ -12,7 +12,7 @@ https://loadout.aident.ai/mcp
 
 For non-production deployments, replace the full server URL with that deployment's MCP URL.
 
-For interactive, always-current setup instructions with videos for each client, visit https://loadout.aident.ai/home and open the card for your client.
+For interactive, always-current setup instructions with videos for each client, visit https://loadout.aident.ai/dashboard and open the card for your client.
 
 ## Client Configuration
 
@@ -138,7 +138,7 @@ Any MCP-compatible client (Codex, Goose, Kiro, OpenCode, Antigravity, Factory, e
 
 On first connection, your MCP client opens a browser window for OAuth sign-in. After authorizing, you're connected automatically. No manual token management needed.
 
-After MCP setup, ask your AI assistant to guide you to https://loadout.aident.ai/integrations to connect the services it should use.
+After MCP setup, ask your AI assistant to guide you to https://loadout.aident.ai/dashboard/apps to connect the services it should use.
 
 To log out or switch accounts, use the `auth` tool with `{ "action": "logout" }`, then reconnect to sign in with a different account.
 
