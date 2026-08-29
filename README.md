@@ -75,6 +75,8 @@ The CLI is the recommended operating path when an agent can run shell commands:
 
 ```bash
 aident login
+aident skills search --query "web research" --json
+aident skills read --name "skill:<uuid>" --artifactVersionId "<uuid>" --json
 aident capabilities search --query "send email" --json
 aident capabilities execute --name composio:gmail_tools:gmail_send_email --input '{"to":"team@example.com","subject":"Hi","body":"..."}' --json
 aident vault status --integrationId composio:gmail_tools --json
