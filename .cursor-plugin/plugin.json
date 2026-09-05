@@ -1,0 +1,17 @@
+{
+  "name": "aident-loadout",
+  "displayName": "Aident Loadout",
+  "version": "0.4.19",
+  "description": "Connect Cursor and Grok Bot agents to 1,000+ tools across Gmail, Slack, Linear, Google Sheets, Notion, HubSpot, Firecrawl, Exa, Fal, and more. Discover 27,000+ actions, use connected accounts through Aident Vault, and review every call in audit history.",
+  "author": {
+    "name": "Aident AI",
+    "email": "help@aident.ai"
+  },
+  "homepage": "https://loadout.aident.ai",
+  "repository": "https://github.com/Aident-AI/aident-skill",
+  "license": "MIT",
+  "keywords": ["aident", "aident-loadout", "agent-tools", "integrations", "automation", "mcp"],
+  "logo": "assets/aident-ai-logo.png",
+  "skills": [],
+  "mcpServers": "mcp.json"
+}

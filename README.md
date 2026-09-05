@@ -58,6 +58,10 @@ We have published Aident Skill across the following Skill, MCP, and Plugin marke
 | Skills.sh         | [Install Aident Skill from Skills.sh](https://skills.sh/aident-ai/aident-skill)       |
 | ClawHub           | [Install Aident Skill from ClawHub](https://clawhub.ai/aident-ai/skills/aident-skill) |
 
+The Cursor Marketplace package, also used by Grok Bot, connects directly to Aident Loadout through MCP. It does not
+install another copy of `aident-skill`, so it can coexist with a CLI-managed global Skill without duplicate routing
+instructions. Marketplace links will be added here after the listing is approved and its public URLs are verified.
+
 ## How It Works
 
 The installable [SKILL.md](./skills/aident-skill/SKILL.md) is intentionally small. It teaches the agent when to use Aident Loadout, then points to focused references packaged with the skill:
@@ -85,7 +89,8 @@ aident audit recent --limit 20 --json
 
 ### MCP
 
-MCP is available when the user configures it:
+MCP is configured automatically by the Cursor Marketplace and Grok Bot plugin. Other MCP clients can configure it
+manually:
 
 - Aident Loadout integrations: `https://loadout.aident.ai/mcp`
 
