@@ -1,0 +1,136 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Aident Loadout",
+    "subtitle": "Orchestrate work across apps",
+    "description": "Aident Loadout helps users find and run actions across services they authorize. It exposes live action schemas, checks connection status, estimates metered action cost, executes approved workflows, and provides reusable guidance for multi-app tasks.",
+    "category": "PRODUCTIVITY"
+  },
+  "tools": {
+    "capabilities_search": {
+      "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false },
+      "justifications": {
+        "read_only_justification": "Searches the Aident capability catalog without modifying user or provider data.",
+        "open_world_justification": "Only queries the bounded Aident catalog and does not contact arbitrary external entities.",
+        "destructive_justification": "Does not delete, overwrite, publish, send, or revoke anything."
+      }
+    },
+    "capabilities_get": {
+      "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false },
+      "justifications": {
+        "read_only_justification": "Retrieves one capability's current metadata and schema without changing state.",
+        "open_world_justification": "Reads only from the bounded Aident capability catalog.",
+        "destructive_justification": "Does not perform the capability or change external data."
+      }
+    },
+    "capabilities_preflight": {
+      "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false },
+      "justifications": {
+        "read_only_justification": "Validates Action input and estimates cost without dispatching the Action.",
+        "open_world_justification": "Uses bounded Aident metadata and pricing logic without contacting arbitrary entities.",
+        "destructive_justification": "Cannot send, publish, delete, purchase, or modify provider data."
+      }
+    },
+    "capabilities_execute": {
+      "annotations": { "readOnlyHint": false, "openWorldHint": true, "destructiveHint": true },
+      "justifications": {
+        "read_only_justification": "Dispatches the selected Action and can create, update, send, publish, or delete data in an authorized service.",
+        "open_world_justification": "Some Actions can interact with user-selected external recipients, resources, or public endpoints.",
+        "destructive_justification": "Some Actions can send irreversible messages, publish content, delete records, or perform other destructive effects after required acknowledgement."
+      }
+    },
+    "skills_search": {
+      "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false },
+      "justifications": {
+        "read_only_justification": "Searches published Aident Skill metadata without changing user or provider data.",
+        "open_world_justification": "Only queries the bounded Aident Skill catalog.",
+        "destructive_justification": "Does not execute a Skill or modify any records."
+      }
+    },
+    "skills_read": {
+      "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false },
+      "justifications": {
+        "read_only_justification": "Retrieves the selected published Skill content without executing it.",
+        "open_world_justification": "Reads only from the bounded Aident Skill catalog.",
+        "destructive_justification": "Does not change user data or contact external services."
+      }
+    },
+    "vault": {
+      "annotations": { "readOnlyHint": false, "openWorldHint": false, "destructiveHint": true },
+      "justifications": {
+        "read_only_justification": "Can initiate a connection flow or disconnect an authorized account in addition to reading connection status.",
+        "open_world_justification": "Only manages the user's bounded Aident Vault connections and returns Aident-hosted connection URLs.",
+        "destructive_justification": "Disconnecting an account removes its active Aident connection and requires an explicit user request."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Discover an Action for reading a small set of Gmail messages.",
+      "user_prompt": "Find the Aident action that can fetch at most one email from my connected Gmail account. Do not run it yet.",
+      "file_attachment_urls": null,
+      "tools_triggered": "capabilities_search",
+      "expected_output": "Returns relevant canonical Action names and enough metadata to select the Gmail fetch Action without reading email content.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Inspect the live schema for a known Gmail Action.",
+      "user_prompt": "Show me the required inputs and side effects for composio:gmail_tools:gmail_send_email. Do not send anything.",
+      "file_attachment_urls": null,
+      "tools_triggered": "capabilities_get",
+      "expected_output": "Returns the live Action schema, connection requirements, and side-effect metadata without executing the Action.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Check whether Gmail is connected without requesting credentials.",
+      "user_prompt": "Check whether my Gmail integration is connected. If it is not, give me the secure connection link.",
+      "file_attachment_urls": null,
+      "tools_triggered": "vault",
+      "expected_output": "Reports the connection state and, when needed, returns an Aident-hosted connection URL without asking for credentials in chat.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Preflight a metered Action without executing it.",
+      "user_prompt": "Estimate the Aident cost and validate to=reviewer@example.com, subject='Aident directory review', and body='Review test' for composio:gmail_tools:gmail_create_email_draft. Do not create the draft.",
+      "file_attachment_urls": null,
+      "tools_triggered": "capabilities_preflight",
+      "expected_output": "Returns validation and cost or approval information without dispatching the Action.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Create a review-safe draft in the connected QA mailbox.",
+      "user_prompt": "Create a Gmail draft addressed to reviewer@example.com using composio:gmail_tools:gmail_create_email_draft. Use subject 'Aident directory review' and body 'Review test'. Do not send it.",
+      "file_attachment_urls": null,
+      "tools_triggered": "capabilities_get, capabilities_execute",
+      "expected_output": "Creates the draft without sending it and reports terminal success without exposing provider secrets or internal identifiers.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Do not trigger for a general knowledge question.",
+      "user_prompt": "Explain why the sky appears blue.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Answers without invoking Aident because no connected-service workflow is required.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not trigger for local code explanation.",
+      "user_prompt": "Explain this TypeScript function from the code I pasted.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Explains the supplied code without invoking Aident.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not facilitate a digital subscription purchase.",
+      "user_prompt": "Buy me an Aident subscription and add more credits.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke the plugin or initiate a digital purchase, subscription, or credit transaction.",
+      "expected_output_url": null
+    }
+  ]
+}

@@ -19,15 +19,15 @@ external app or API is outside this routing requirement.
 
 ## Choose Skill Or Capability Discovery
 
-Choose the first search from the scope of the task, not from your confidence or whether the Integration name is known:
+Choose the first search from the kind of uncertainty, not from whether the Integration name is known:
 
 1. If the user supplied an exact Skill identity and artifact version, skip search and use `skills read` directly.
-2. For broad, multi-step outcomes, use `skills search` once before planning, even if you already know the steps, unless the user supplied a workflow or an exact Skill. Examples include launching a product, coordinating hiring, or planning outreach. Do not repeat Skill search for each Action or follow-up within the same workflow.
-3. Use `capabilities search` first for concrete external operations, such as sending an email, searching posts, or reading a spreadsheet. Follow a user-supplied workflow and discover its Actions through capability search. This is the correct route even when the agent does not know which Integration provides the operation or what Integrations Loadout has.
-4. Do not search both catalogs speculatively. If capability results expose unresolved procedural ambiguity and you have not already searched Skills for this workflow, search Skills once. If Skill search returns no materially useful guidance, continue with the agent's own decomposition and the normal capability workflow.
+2. If the agent can describe the required external operation in provider-neutral terms, use `capabilities search`. This is the correct route even when the agent does not know which Integration provides the operation or what Integrations Loadout has.
+3. Use `skills search` when the agent cannot confidently decompose the broader outcome into concrete external operations, or when success depends on curated steps, sequencing, branching, tool-selection criteria, or a domain-specific method.
+4. Do not search both catalogs speculatively. If capability results expose unresolved procedural ambiguity, search Skills once. If Skill search returns no materially useful guidance, continue with the agent's own decomposition and the normal capability workflow.
 5. After reading a Skill, resolve every referenced Action through `capabilities search` or `capabilities get`, then apply the normal schema, preflight, Vault, risk, billing, and authorization checks before `capabilities execute`.
 
-`capabilities search` answers "what can Loadout execute, and through which Integration?" `skills search` answers "how should Actions be combined to accomplish this broader outcome?" Knowing how to plan a broad outcome does not remove the Skill search step. Unknown provider alone is not a reason to search Skills.
+`capabilities search` answers "what can Loadout execute, and through which Integration?" `skills search` answers "how should Actions be combined to accomplish this broader outcome?" Unknown provider alone is not a reason to search Skills.
 
 ## Find And Use A Public Skill
 

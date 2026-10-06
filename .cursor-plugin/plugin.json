@@ -1,7 +1,7 @@
 {
   "name": "aident-loadout",
   "displayName": "Aident Loadout",
-  "version": "0.4.19",
+  "version": "0.4.20",
   "description": "Connect Cursor and Grok Bot agents to 1,000+ tools across Gmail, Slack, Linear, Google Sheets, Notion, HubSpot, Firecrawl, Exa, Fal, and more. Discover 27,000+ actions, use connected accounts through Aident Vault, and review every call in audit history.",
   "author": {
     "name": "Aident AI",
