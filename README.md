@@ -28,6 +28,16 @@ Follow https://aident.ai/SETUP.md
 
 The setup guide will install or refresh `aident-skill`, set up the Aident CLI, guide login, and verify Aident Loadout access.
 
+For Meta Muse, use the client-specific guide:
+
+```text
+Follow https://aident.ai/muse/SETUP.md
+```
+
+It combines the shared setup guide with the [Muse supplement](./setup/clients/muse.md) for cloud authentication,
+custom connector reuse, and app verification. The [setup source directory](./setup/README.md) stays separate from
+the installable static Skill.
+
 To refresh an existing agent setup later, ask the agent:
 
 ```text
